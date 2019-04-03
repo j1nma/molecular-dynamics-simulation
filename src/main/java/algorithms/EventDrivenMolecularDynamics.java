@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Off-Lattice implementation
  */
-public class TODOAlgorithm {
+public class EventDrivenMolecularDynamics {
 
 	/**
 	 * Cells from 0 to MxM - 1.
