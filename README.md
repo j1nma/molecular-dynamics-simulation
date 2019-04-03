@@ -1,6 +1,6 @@
 # Event Driven Molecular Dynamics Simulation of Hard Spheres: Brownian Movement
 
-Molecular dynamics simulation of hard spheres governed by events with elastic collisions.
+Molecular dynamics simulation of hard spheres governed by events with elastic collisions. No other forces are exerted.
 Particles follow a uniform rectilinear motion between collisions.
 N is the number of particles, and the maximum that allows simulations in reasonable times.
 
@@ -15,7 +15,6 @@ particles) to then make animations with a uniform temporal step.
 
 The simulation generates an output in text file format. Then the animation module runs independently taking these text 
 files as input. In this way the speed of the animation is not subject to the speed of the simulation.
-
 
 ## Brownian Movement
 Consider a square domain of side L = 0.5 m.
