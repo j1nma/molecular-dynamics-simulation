@@ -33,6 +33,16 @@ public class EventDrivenMolecularDynamics {
 			double speed,
 			StringBuffer buff
 	) throws CloneNotSupportedException {
+
+		// 1) The initial positions and speeds, radii and size of the box are defined.
+		// 2) The time until the first shock (event!) (Tc) is calculated.
+		// 3) All the particles are evolved according to their equations of movement until tc.
+		// 4) The state of the system (positions and speeds) is stored at t = tc
+		// 5) With the "collision operator" the new speeds are determined after the collision, only for the particles that collided.
+		// 6) Go to 2).
+
+		// Below is previous run()
+
 		rc = interactionRadius;
 		M = matrixSize;
 		L = boxSide;
