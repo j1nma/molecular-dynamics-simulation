@@ -63,7 +63,7 @@ python [TODO]
 java -jar [TODO]
 ```
 
-Options:
+Options [TODO]:
 
 * **-h, --help**: Prints usage infp.
 * **-M, --matrix &lt;size>**: Size of the squared matrix.
