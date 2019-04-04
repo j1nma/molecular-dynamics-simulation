@@ -4,16 +4,19 @@ import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Particle implements Cloneable{
+public class Particle implements Cloneable {
 
 	private final int id;
 	private Point2D.Double position;
-	private double angle;
+	private Point2D.Double velocity;
+	private double radius;
+	private double mass;
 	private Set<Particle> neighbours;
 
-	public Particle(int id, double angle) {
+	public Particle(int id, double radius, double mass) {
 		this.id = id;
-		this.angle = angle;
+		this.radius = radius;
+		this.mass = mass;
 		this.neighbours = new HashSet<>();
 	}
 
@@ -32,10 +35,12 @@ public class Particle implements Cloneable{
 
 	@Override
 	public String toString() {
-		return "models.Particle{" +
+		return "Particle{" +
 				"id=" + id +
 				", position=" + position +
-				", angle=" + angle +
+				", velocity=" + velocity +
+				", radius=" + radius +
+				", mass=" + mass +
 				", neighbours=" + neighbours +
 				'}';
 	}
@@ -52,8 +57,28 @@ public class Particle implements Cloneable{
 		this.position = position;
 	}
 
-	public double getAngle() {
-		return angle;
+	public Point2D.Double getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(Point2D.Double velocity) {
+		this.velocity = velocity;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public double getMass() {
+		return mass;
+	}
+
+	public void setMass(double mass) {
+		this.mass = mass;
 	}
 
 	public Set<Particle> getNeighbours() {
@@ -92,10 +117,6 @@ public class Particle implements Cloneable{
 
 	public void addNeighbour(Particle neighbour) {
 		this.neighbours.add(neighbour);
-	}
-
-	public void setAngle(double angle) {
-		this.angle = angle;
 	}
 
 	public void clearNeighbours() {
