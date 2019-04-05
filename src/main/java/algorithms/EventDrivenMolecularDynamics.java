@@ -82,21 +82,6 @@ public class EventDrivenMolecularDynamics {
 			List<List<CellParticle>> oldCells = cloneMatrix(cells);
 			List<Particle> particles = new LinkedList<>();
 
-			// calculamos vecinos
-			for (List<CellParticle> cellParticles : cells) {
-				for (CellParticle cp : cellParticles) {
-					double cellX = cp.cellPosition.x;
-					double cellY = cp.cellPosition.y;
-
-					// Check neighbouring cells from inverted up-side down L shape
-					visitNeighbour(cp.particle, cellX, cellY, cells, oldCells);
-					visitNeighbour(cp.particle, cellX, cellY + 1, cells, oldCells);
-					visitNeighbour(cp.particle, cellX + 1, cellY + 1, cells, oldCells);
-					visitNeighbour(cp.particle, cellX + 1, cellY, cells, oldCells);
-					visitNeighbour(cp.particle, cellX + 1, cellY - 1, cells, oldCells);
-				}
-			}
-
 			//cambia positions
 			for (List<CellParticle> cpList : cells) {
 				for (CellParticle cp : cpList) {
@@ -116,7 +101,6 @@ public class EventDrivenMolecularDynamics {
 
 			for (Particle particle : particles) {
 				buff.append(particleToString(particle)).append("\n");
-				particle.clearNeighbours();
 				assignCell(particle);
 			}
 
@@ -187,57 +171,6 @@ public class EventDrivenMolecularDynamics {
 		}
 	}
 
-	private static void visitNeighbour(Particle particle, double cellX, double cellY, List<List<CellParticle>> cells, List<List<CellParticle>> oldCells) {
-
-		// Reset neighbour cell indexes to comply with contour
-		if (cellX >= M) {
-			cellX = 0;
-		}
-
-		if (cellX < 0) {
-			cellX = M - 1;
-		}
-
-		if (cellY >= M) {
-			cellY = 0;
-		}
-
-		if (cellY < 0) {
-			cellY = M - 1;
-		}
-
-		int neighbourCellNumber = (int) (cellY * M + cellX);
-
-		List<CellParticle> neighbourCellParticles = oldCells.get(neighbourCellNumber);
-
-		// itero por cada particula vecina en matrixA comparando con la particle que me dieron de matriz CELLS
-		for (CellParticle neighbourCellParticle : neighbourCellParticles) {
-
-			Particle neighbourParticle = neighbourCellParticle.particle;
-
-			// chequeo que no sean la misma (una misma particula tiene dos objetos, mirar el id)
-			if (neighbourParticle.getId() != particle.getId()) {
-
-				if (particle.getPeriodicDistanceBetween(neighbourParticle, L) < rc) {
-					// Mutually add both particles as neighbours
-					particle.addNeighbour(neighbourParticle); //a la particula en cells le puse vecina a la de matrizA
-					//neighbourParticle.addNeighbour(particle);
-					boolean eject = false;
-					for (List<CellParticle> cpList : cells) {
-						for (CellParticle cp : cpList) {
-							if (cp.particle.getId() == neighbourParticle.getId()) {
-								neighbourParticle.addNeighbour(particle);
-								eject = true;
-								break;
-							}
-						}
-						if (eject) break;
-					}
-				}
-			}
-		}
-	}
-
 	private static class CellParticle {
 		Particle particle;
 		Point2D.Double cellPosition;
@@ -257,6 +190,76 @@ public class EventDrivenMolecularDynamics {
 				;
 	}
 
+	/**
+	 * A data type to represent collision events.
+	 * There are four different types of events:
+	 * a collision with a vertical wall,
+	 * a collision with a horizontal wall,
+	 * a collision between two particles,
+	 * and a redraw event.
+	 */
 	private static class Event {
+
+		private double t;
+		private Particle particle1;
+		private Particle particle2;
+		private int collisionsP1 = 0;
+		private int collisionsP2 = 0;
+
+		/**
+		 * Create a new event representing a collision between particles a and b at time t.
+		 * If neither a nor b is null, then it represents a pairwise collision between a and b;
+		 * if both a and b are null, it represents a redraw event; if only b is null,
+		 * it represents a collision between a and a vertical wall; if only a is null,
+		 * it represents a collision between b and a horizontal wall.
+		 *
+		 * @param t time t
+		 * @param a particle a
+		 * @param b particle b
+		 */
+		public Event(double t, Particle a, Particle b) {
+			this.t = t;
+			this.particle1 = a;
+			this.particle2 = b;
+			if (particle1 != null)
+				collisionsP1 = particle1.getCollisionCount();
+			if (particle2 != null)
+				collisionsP2 = particle2.getCollisionCount();
+		}
+
+		/**
+		 * return the time associated with the event.
+		 */
+		public double getTime() {
+			return this.t;
+		}
+
+		/**
+		 * return the first particle, possibly null.
+		 */
+		public Particle getParticle1() {
+			return this.particle1;
+		}
+
+		/**
+		 * return the second particle, possibly null.
+		 */
+		public Particle getParticle2() {
+			return this.particle2;
+		}
+
+		/**
+		 * compare the time associated with this event and x. Return a positive number (greater), negative number (less), or zero (equal) accordingly.
+		 */
+		public int compareTo(Event e) {
+			return (int) (t - e.t);
+		}
+
+		/**
+		 * return true if the event has been invalidated since creation, and false if the event has been invalidated.
+		 */
+		public boolean wasSuperveningEvent() {
+
+		}
 	}
 }
