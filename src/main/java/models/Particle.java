@@ -1,8 +1,6 @@
 package models;
 
 import java.awt.geom.Point2D;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Particle implements Cloneable {
 
@@ -11,14 +9,79 @@ public class Particle implements Cloneable {
 	private Point2D.Double velocity;
 	private double radius;
 	private double mass;
-	private Set<Particle> neighbours;
 
 	public Particle(int id, double radius, double mass) {
 		this.id = id;
 		this.radius = radius;
 		this.mass = mass;
-		this.neighbours = new HashSet<>();
 	}
+
+
+	/**
+	 * return the duration of time until the invoking particle collides with a vertical wall,
+	 * assuming it follows a straight-line trajectory. If the particle never collides with a vertical wall,
+	 * return a negative number.
+	 *
+	 * @return duration of time until collision
+	 */
+	public double collidesX() {
+		return 0.0;
+	}
+
+	/**
+	 * return the duration of time until the invoking particle collides with a vertical wall,
+	 * assuming it follows a straight-line trajectory. If the particle never collides with a vertical wall,
+	 * return a negative number.
+	 *
+	 * @return duration of time until collision
+	 */
+	public double collidesY() {
+		return 0.0;
+	}
+
+	/**
+	 * return the duration of time until the invoking particle collides with particle b,
+	 * assuming both follow straight-line trajectories. If the two particles never collide, return a negative value.
+	 *
+	 * @param b other particle
+	 * @return duration of time until collision
+	 */
+	public double collides(Particle b) {
+		return 0.0;
+	}
+
+	/**
+	 * update the invoking particle to simulate it bouncing off a vertical wall.
+	 */
+	public void bounceX() {
+
+	}
+
+	/**
+	 * update the invoking particle to simulate it bouncing off a horizontal wall.
+	 */
+	public void bounceY() {
+
+	}
+
+	/**
+	 * update both particles to simulate them bouncing off each other.
+	 *
+	 * @param b other particle in bounce
+	 */
+	public void bounce(Particle b) {
+
+	}
+
+	/**
+	 * return the total number of collisions involving this particle.
+	 *
+	 * @return total collisions
+	 */
+	public int getCollisionCount() {
+		return 0;
+	}
+
 
 	@Override
 	public boolean equals(Object o) {
@@ -41,7 +104,6 @@ public class Particle implements Cloneable {
 				", velocity=" + velocity +
 				", radius=" + radius +
 				", mass=" + mass +
-				", neighbours=" + neighbours +
 				'}';
 	}
 
@@ -79,48 +141,6 @@ public class Particle implements Cloneable {
 
 	public void setMass(double mass) {
 		this.mass = mass;
-	}
-
-	public Set<Particle> getNeighbours() {
-		return neighbours;
-	}
-
-	/**
-	 * To understand this calculation, think about a 8x8 matrix.
-	 * The distance between (0,0) and (0,7) is 7 without periodic boundaries,
-	 * but with it, it should be smaller (1, since they 'touch' each other).
-	 * So this applies too for (0,5) and (0,6), or, when the index is greater than L/2.
-	 * L is the size of the size of the box/matrix.
-	 */
-	public double getPeriodicDistanceBetween(Particle particle, double L) {
-		Point2D.Double particlePosition = particle.getPosition();
-		double dx = Math.abs(this.position.x - particlePosition.x);
-		if (dx > L / 2)
-			dx = L - dx;
-
-		double dy = Math.abs(this.position.y - particlePosition.y);
-		if (dy > L / 2)
-			dy = L - dy;
-
-		return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-	}
-
-	/**
-	 * The distance between points contemplates border-to-border distance.
-	 * That is why the radii are subtracted.
-	 */
-	public double getDistanceBetween(Particle particle) {
-		Point2D.Double particlePosition = particle.getPosition();
-		return Math.sqrt(Math.pow(position.x - particlePosition.x, 2) +
-				Math.pow(position.y - particlePosition.y, 2));
-	}
-
-	public void addNeighbour(Particle neighbour) {
-		this.neighbours.add(neighbour);
-	}
-
-	public void clearNeighbours() {
-		this.neighbours = new HashSet<>();
 	}
 
 	public Particle getClone() throws CloneNotSupportedException {

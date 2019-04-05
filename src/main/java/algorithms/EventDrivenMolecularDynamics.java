@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  * Off-Lattice implementation
@@ -18,8 +19,11 @@ public class EventDrivenMolecularDynamics {
 	 * A CellParticle contains a Particle and the cell's position.
 	 */
 	private static List<List<CellParticle>> cells = new ArrayList<>();
-	private static double L;
 	private static int M;
+
+	private static PriorityQueue<Event> pq = new PriorityQueue<Event>();
+	private static double L;
+	private static int tc;
 
 	public static void run(
 			List<Particle> particlesFromDynamic,
@@ -28,16 +32,6 @@ public class EventDrivenMolecularDynamics {
 			int limitTime,
 			StringBuffer buff
 	) throws CloneNotSupportedException {
-
-		// 1) The initial positions and speeds, radii and size of the box are defined.
-		// 2) The time until the first shock (event!) (Tc) is calculated.
-		// 3) All the particles are evolved according to their equations of movement until tc.
-		// 4) The state of the system (positions and speeds) is stored at t = tc
-		// 5) With the "collision operator" the new speeds are determined after the collision, only for the particles that collided.
-		// 6) Go to 2).
-
-		// Below is previous run()
-
 		M = matrixSize;
 		L = boxSize;
 		makeMatrix();
@@ -62,6 +56,26 @@ public class EventDrivenMolecularDynamics {
 
 		// Save t = 0 order value
 
+
+		// Main event-driven simulation loop
+
+		// 1) The initial positions and speeds, radii and size of the box are defined with particlesFromDynamic and boxSize.
+
+		// 2) The time until the first shock (event!) (Tc) is calculated.
+		tc = calculateTimeUntilNextEvent();
+
+		// 3) All the particles are evolved according to their equations of movement until tc.
+		evolveParticlesUntilTc(particlesFromDynamic, tc);
+
+		// 4) The state of the system (positions and speeds) is stored at t = tc
+		storeSystemState(particlesFromDynamic, tc);
+
+		// 5) With the "collision operator" the new speeds are determined after the collision, only for the particles that collided.
+
+		// 6) Go to 2).
+
+
+		// Below is previous run()
 		// Do the off-lattice magic
 		for (int time = 0; time < limitTime; time++) {
 			// estoy en Tn y voy a calcular Tn+1
@@ -108,6 +122,18 @@ public class EventDrivenMolecularDynamics {
 
 //			orderValues.push(getOrderValue(particles));
 		}
+	}
+
+	private static void storeSystemState(List<Particle> particlesFromDynamic, int tc) {
+
+	}
+
+	private static void evolveParticlesUntilTc(List<Particle> particlesFromDynamic, int tc) {
+
+	}
+
+	private static int calculateTimeUntilNextEvent() {
+		return 0;
 	}
 
 	private static List<List<CellParticle>> cloneMatrix(List<List<CellParticle>> cells) throws CloneNotSupportedException {
@@ -231,4 +257,6 @@ public class EventDrivenMolecularDynamics {
 				;
 	}
 
+	private static class Event {
+	}
 }
