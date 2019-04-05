@@ -47,10 +47,10 @@ mvn clean package
 ```
 
 ## Execution
-### Generation of dynamic file
-[TODO]
+### Generation of static and dynamic files
 ```
-python [TODO]
+python3 generate.py 100 0.5 0.1 0.0005 0.1 0.005 100
+
 ```
 
 [TODO]

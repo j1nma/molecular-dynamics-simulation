@@ -1,10 +1,24 @@
-from functions import is_int_string, get_radius, get_area_length, generate_files
+from functions import is_int_string, generate_files
 import sys
 
-number_of_particles = input("Enter number of particles N: ")
-area_length = get_area_length()
+if len(sys.argv) != 8:
+    sys.exit("Arguments missing. Exit.")
 
-if not is_int_string(number_of_particles) or not is_int_string(area_length):
-    sys.exit("All arguments must be integers. Exit.")
+number_of_small_particles = sys.argv[1]
+area_length = sys.argv[2]
+max_velocity_module = sys.argv[3]
+particle_radius = sys.argv[4]
+particle_mass = sys.argv[5]
+large_particle_radius = sys.argv[6]
+large_particle_mass = sys.argv[7]
 
-generate_files(int(number_of_particles), area_length)
+if not is_int_string(number_of_small_particles):
+    sys.exit("Must be integer. Exit.")
+
+generate_files(int(number_of_small_particles),
+float(area_length),
+float(max_velocity_module),
+float(particle_radius),
+float(particle_mass),
+float(large_particle_radius),
+float(large_particle_mass))
