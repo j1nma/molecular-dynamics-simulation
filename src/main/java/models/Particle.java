@@ -82,6 +82,13 @@ public class Particle implements Cloneable {
 		return 0;
 	}
 
+	public void evolve(double time) {
+
+	}
+
+	public double getKineticEnergy() {
+		return 0.0;
+	}
 
 	@Override
 	public boolean equals(Object o) {

@@ -259,7 +259,7 @@ public class EventDrivenMolecularDynamics {
 		 * return true if the event has been invalidated since creation, and false if the event has been invalidated.
 		 */
 		public boolean wasSuperveningEvent() {
-
+			return true;
 		}
 	}
 }
