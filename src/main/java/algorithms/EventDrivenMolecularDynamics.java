@@ -1,10 +1,10 @@
 package algorithms;
 
 import models.Particle;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -21,7 +21,7 @@ public class EventDrivenMolecularDynamics {
 	private static List<List<CellParticle>> cells = new ArrayList<>();
 	private static int M;
 
-	private static PriorityQueue<Event> pq = new PriorityQueue<Event>();
+	private static PriorityQueue<Event> pq = new PriorityQueue<>();
 	private static double L;
 	private static int tc;
 
@@ -31,7 +31,7 @@ public class EventDrivenMolecularDynamics {
 			int matrixSize,
 			int limitTime,
 			StringBuffer buff
-	) throws CloneNotSupportedException {
+	) {
 		M = matrixSize;
 		L = boxSize;
 		makeMatrix();
@@ -39,8 +39,8 @@ public class EventDrivenMolecularDynamics {
 		// Particles for fixing Ovito grid
 		Particle dummy1 = new Particle(-1, 0, 0);
 		Particle dummy2 = new Particle(0, 0, 0);
-		dummy1.setPosition(new Point2D.Double(0, 0));
-		dummy2.setPosition(new Point2D.Double(L, L));
+		dummy1.setPosition(new Vector2D(0, 0));
+		dummy2.setPosition(new Vector2D(L, L));
 
 		// Print dummy particles to simulation output file
 		buff.append(particlesFromDynamic.size() + 2).append("\n")
@@ -73,39 +73,6 @@ public class EventDrivenMolecularDynamics {
 		// 5) With the "collision operator" the new speeds are determined after the collision, only for the particles that collided.
 
 		// 6) Go to 2).
-
-
-		// Below is previous run()
-		// Do the off-lattice magic
-		for (int time = 0; time < limitTime; time++) {
-			// estoy en Tn y voy a calcular Tn+1
-			List<List<CellParticle>> oldCells = cloneMatrix(cells);
-			List<Particle> particles = new LinkedList<>();
-
-			//cambia positions
-			for (List<CellParticle> cpList : cells) {
-				for (CellParticle cp : cpList) {
-					Particle particle = cp.particle;
-					calculatePosition(particle);
-					// For printing
-					particles.add(particle);
-				}
-			}
-
-			// imprime y blanquea para el siguiente clonado
-			makeMatrix();
-			buff.append(particles.size() + 2).append("\n")
-					.append(time).append(1).append("\n")
-					.append(particleToString(dummy1)).append("\n")
-					.append(particleToString(dummy2)).append("\n");
-
-			for (Particle particle : particles) {
-				buff.append(particleToString(particle)).append("\n");
-				assignCell(particle);
-			}
-
-//			orderValues.push(getOrderValue(particles));
-		}
 	}
 
 	private static void storeSystemState(List<Particle> particlesFromDynamic, int tc) {
@@ -120,25 +87,10 @@ public class EventDrivenMolecularDynamics {
 		return 0;
 	}
 
-	private static List<List<CellParticle>> cloneMatrix(List<List<CellParticle>> cells) throws CloneNotSupportedException {
-		List<List<CellParticle>> clone = new ArrayList<>();
-
-		for (List<CellParticle> cellParticles : cells) {
-			List<CellParticle> cloneCellParticles = new ArrayList<>();
-			for (CellParticle cellParticle : cellParticles) {
-				Particle particleClone = cellParticle.particle.getClone();
-				cloneCellParticles.add(new CellParticle(particleClone,
-						new Point2D.Double(cellParticle.cellPosition.x, cellParticle.cellPosition.y)));
-			}
-			clone.add(cloneCellParticles);
-		}
-		return clone;
-	}
-
 	private static void assignCell(Particle p) {
 		// Calculate particle's cell indexes
-		double cellX = Math.floor(p.getPosition().x / (L / M));
-		double cellY = Math.floor(p.getPosition().y / (L / M));
+		double cellX = Math.floor(p.getPosition().getX() / (L / M));
+		double cellY = Math.floor(p.getPosition().getY() / (L / M));
 
 		// Calculate particle's cell number
 		int cellNumber = (int) (cellY * M + cellX);
@@ -154,23 +106,6 @@ public class EventDrivenMolecularDynamics {
 			cells.add(new ArrayList<>());
 	}
 
-	private static void calculatePosition(Particle p) {
-//		p.getPosition().x += Math.cos(p.getAngle()) * s; TODO: correct
-//		p.getPosition().y += Math.sin(p.getAngle()) * s;
-		if (p.getPosition().x >= L) {
-			p.getPosition().x -= L;
-		}
-		if (p.getPosition().y >= L) {
-			p.getPosition().y -= L;
-		}
-		if (p.getPosition().x < 0) {
-			p.getPosition().x += L;
-		}
-		if (p.getPosition().y < 0) {
-			p.getPosition().y += L;
-		}
-	}
-
 	private static class CellParticle {
 		Particle particle;
 		Point2D.Double cellPosition;
@@ -183,10 +118,10 @@ public class EventDrivenMolecularDynamics {
 
 	private static String particleToString(Particle p) {
 		return p.getId() + " " +
-				p.getPosition().x + " " +
-				p.getPosition().y + " " +
-				p.getVelocity().x + " " +
-				p.getVelocity().y + " " //TODO: should colour come here as angle did in TP2?
+				p.getPosition().getX() + " " +
+				p.getPosition().getY() + " " +
+				p.getVelocity().getX() + " " +
+				p.getVelocity().getY() + " " //TODO: should colour come here as angle did in TP2?
 				;
 	}
 
@@ -252,14 +187,18 @@ public class EventDrivenMolecularDynamics {
 		 * compare the time associated with this event and x. Return a positive number (greater), negative number (less), or zero (equal) accordingly.
 		 */
 		public int compareTo(Event e) {
-			return (int) (t - e.t);
+			return Double.compare(t, e.getTime());
 		}
 
 		/**
 		 * return true if the event has been invalidated since creation, and false if the event has been invalidated.
 		 */
 		public boolean wasSuperveningEvent() {
-			return true;
+			if (particle1 == null)
+				return particle2.getCollisionCount() != collisionsP2;
+			if (particle2 == null)
+				return particle1.getCollisionCount() != collisionsP1;
+			return particle1.getCollisionCount() != collisionsP1 || particle2.getCollisionCount() != collisionsP2;
 		}
 	}
 }
