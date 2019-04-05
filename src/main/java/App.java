@@ -34,7 +34,7 @@ public class App {
 		// Run algorithm
 		runAlgorithm(
 				particles,
-				staticAndDynamicParser.getBoxSide(),
+				staticAndDynamicParser.getBoxSize(),
 				options.M,
 				options.time
 		);

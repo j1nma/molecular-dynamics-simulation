@@ -23,7 +23,7 @@ public class EventDrivenMolecularDynamics {
 
 	public static void run(
 			List<Particle> particlesFromDynamic,
-			double boxSide,
+			double boxSize,
 			int matrixSize,
 			int limitTime,
 			StringBuffer buff
@@ -39,7 +39,7 @@ public class EventDrivenMolecularDynamics {
 		// Below is previous run()
 
 		M = matrixSize;
-		L = boxSide;
+		L = boxSize;
 		makeMatrix();
 
 		// Particles for fixing Ovito grid

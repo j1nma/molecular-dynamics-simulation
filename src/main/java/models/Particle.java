@@ -90,7 +90,7 @@ public class Particle implements Cloneable {
 	 * The distance between (0,0) and (0,7) is 7 without periodic boundaries,
 	 * but with it, it should be smaller (1, since they 'touch' each other).
 	 * So this applies too for (0,5) and (0,6), or, when the index is greater than L/2.
-	 * L is the size of the side of the box/matrix.
+	 * L is the size of the size of the box/matrix.
 	 */
 	public double getPeriodicDistanceBetween(Particle particle, double L) {
 		Point2D.Double particlePosition = particle.getPosition();
