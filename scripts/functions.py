@@ -40,12 +40,12 @@ def generate_dynamic_file(name, number_of_small_particles, area_length, max_velo
             f.write('{}\t{}\t{}\t{}\t{}\n'.format(i + 2, x, y, vx, vy))
 
 def generate_files(number_of_small_particles, area_length, max_velocity_module, particle_radius, particle_mass, large_particle_radius, large_particle_mass):
-    generate_static_file('Static-N=' + str(number_of_small_particles + 1) + '.txt', number_of_small_particles, area_length, particle_radius, particle_mass, large_particle_radius, large_particle_mass)
-    generate_dynamic_file('Dynamic-N=' + str(number_of_small_particles + 1) + '.txt', number_of_small_particles, area_length, max_velocity_module, particle_radius, large_particle_radius)
+    generate_static_file('Static-N=' + str(number_of_small_particles) + '.txt', number_of_small_particles, area_length, particle_radius, particle_mass, large_particle_radius, large_particle_mass)
+    generate_dynamic_file('Dynamic-N=' + str(number_of_small_particles) + '.txt', number_of_small_particles, area_length, max_velocity_module, particle_radius, large_particle_radius)
 
 def generate_multiple_files(index, number_of_small_particles, area_length, particle_radius, particle_mass, large_particle_radius, large_particle_mass):
     generate_static_file('Static-' + str(index) + '.txt', number_of_small_particles, area_length, particle_radius, particle_mass, large_particle_radius, large_particle_mass)
-    generate_dynamic_file('Dynamic-N=' + str(number_of_small_particles + 1) + '.txt', number_of_small_particles, area_length, max_velocity_module, particle_radius, large_particle_radius)
+    generate_dynamic_file('Dynamic-N=' + str(number_of_small_particles) + '.txt', number_of_small_particles, area_length, max_velocity_module, particle_radius, large_particle_radius)
 
 def is_int_string(s):
     try:
