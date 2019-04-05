@@ -6,12 +6,13 @@ def is_valid_position(otherX, otherY, otherRadius, newX, newY, newRadius):
 
 def generate_static_file(name, number_of_small_particles, area_length, particle_radius, particle_mass, large_particle_radius, large_particle_mass):
     with open(name, 'w') as f:
-        one_value = '{}\n'
-        f.write(one_value.format(number_of_small_particles + 1))
-        for x in range(0, number_of_small_particles):
-            f.write('{} {}\n'.format(particle_radius, particle_mass))
+        f.write('{}\n'.format(number_of_small_particles))
+
         # Large particle
         f.write('{} {}\n'.format(large_particle_radius, large_particle_mass))
+
+        for x in range(0, number_of_small_particles):
+            f.write('{} {}\n'.format(particle_radius, particle_mass))
 
 def generate_dynamic_file(name, number_of_small_particles, area_length, max_velocity_module, particle_radius, large_particle_radius):
     with open(name, 'w') as f:
