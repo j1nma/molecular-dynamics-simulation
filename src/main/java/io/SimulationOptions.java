@@ -26,13 +26,13 @@ public class SimulationOptions extends OptionsBase {
 	public int M;
 
 	@Option(
-			name = "radius",
-			abbrev = 'r',
-			help = "interaction radius",
+			name = "staticFile",
+			abbrev = 's',
+			help = "Path to static file.",
 			category = "startup",
-			defaultValue = "0.5"
+			defaultValue = "/"
 	)
-	public double rc;
+	public String staticFile;
 
 	@Option(
 			name = "dynamicFile",
@@ -42,33 +42,6 @@ public class SimulationOptions extends OptionsBase {
 			defaultValue = "/"
 	)
 	public String dynamicFile;
-
-	@Option(
-			name = "noise",
-			abbrev = 'n',
-			help = "Noise in the environment",
-			category = "startup",
-			defaultValue = "0.1"
-	)
-	public double noise;
-
-	@Option(
-			name = "boxSide",
-			abbrev = 'l',
-			help = "The length of the box side",
-			category = "startup",
-			defaultValue = "20.0"
-	)
-	public double boxSide;
-
-	@Option(
-			name = "speed",
-			abbrev = 's',
-			help = "Speed module of the environment",
-			category = "startup",
-			defaultValue = "0.03"
-	)
-	public double speed;
 
 	@Option(
 			name = "time",

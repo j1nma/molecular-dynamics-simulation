@@ -1,6 +1,5 @@
-import algorithms.OffLattice;
+import algorithms.EventDrivenMolecularDynamics;
 import com.google.devtools.common.options.OptionsParser;
-import io.OctaveWriter;
 import io.OvitoWriter;
 import io.Parser;
 import io.SimulationOptions;
@@ -19,68 +18,48 @@ public class App {
 		parser.parseAndExitUponError(args);
 		SimulationOptions options = parser.getOptions(SimulationOptions.class);
 		assert options != null;
-		if (options.rc < 0
-				|| options.noise < 0
-				|| options.boxSide < 0
-				|| options.speed < 0
-				|| options.time <= 0
+		if (options.time <= 0
 				|| options.M <= 0
+				|| options.staticFile.isEmpty()
 				|| options.dynamicFile.isEmpty()) {
 			printUsage(parser);
 		}
 
-		// Parse dynamic file
-		Parser dynamicParser = new Parser(options.dynamicFile);
-		if (!dynamicParser.parse()) return;
+		// Parse static and dynamic files
+		Parser staticAndDynamicParser = new Parser(options.staticFile, options.dynamicFile);
+		if (!staticAndDynamicParser.parse()) return;
 
-		List<Particle> particles = dynamicParser.getParticles();
-
-		// Validate matrix size meets non-punctual criteria
-		if (!BoxSizeMeetsCriteria(options.M,
-				options.boxSide,
-				options.rc)) {
-			System.out.println("L / M > interactionRadius failed.");
-			return;
-		}
+		List<Particle> particles = staticAndDynamicParser.getParticles();
 
 		// Run algorithm
 		runAlgorithm(
 				particles,
-				options.boxSide,
+				staticAndDynamicParser.getBoxSide(),
 				options.M,
-				options.rc,
-				options.time,
-				options.noise,
-				options.speed
+				options.time
 		);
 	}
 
 	private static void runAlgorithm(List<Particle> particles,
 	                                 double L,
 	                                 int M,
-	                                 double interactionRadius,
-	                                 int time,
-	                                 double noise,
-	                                 double speed) throws CloneNotSupportedException {
+	                                 int time) throws CloneNotSupportedException {
 
 		StringBuffer buffer = new StringBuffer();
 		long startTime = System.currentTimeMillis();
 
-		OffLattice.run(
+		EventDrivenMolecularDynamics.run(
 				particles,
 				L,
 				M,
-				interactionRadius,
 				time,
-				noise,
-				speed,
 				buffer
 		);
 
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
 
-		System.out.println("Off-Lattice Method execution time: " + elapsedTime + "ms");
+		System.out.println("Event Driven Molecular Dynamics execution time: " + elapsedTime + "ms");
 
 		OvitoWriter<Particle> ovitoWriter;
 		try {
@@ -91,26 +70,22 @@ public class App {
 			e.printStackTrace();
 		}
 
-		System.out.println(OffLattice.getOrderValues().peek());
+//		System.out.println(OffLattice.getOrderValues().peek());
 
-		OctaveWriter octaveWriter;
-		try {
-			octaveWriter = new OctaveWriter(Paths.get("particular_va_file.txt"));
-			octaveWriter.writeOrderValuesThroughIterations(OffLattice.getOrderValues());
-			octaveWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+//		OctaveWriter octaveWriter;
+//		try {
+//			octaveWriter = new OctaveWriter(Paths.get("particular_va_file.txt"));
+//			octaveWriter.writeOrderValuesThroughIterations(OffLattice.getOrderValues());
+//			octaveWriter.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	private static void printUsage(OptionsParser parser) {
-		System.out.println("Usage: java -jar tp2-1.0-SNAPSHOT.jar OPTIONS");
+		System.out.println("Usage: java -jar molecular-dynamics-simulation-1.0-SNAPSHOT.jar OPTIONS");
 		System.out.println(parser.describeOptions(Collections.emptyMap(),
 				OptionsParser.HelpVerbosity.LONG));
 	}
 
-	private static boolean BoxSizeMeetsCriteria(int M, double L, double interactionRadius) {
-		return M > 0 && L / M > interactionRadius;
-	}
 }

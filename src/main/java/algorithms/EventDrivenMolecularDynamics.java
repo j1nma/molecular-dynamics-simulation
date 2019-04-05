@@ -3,7 +3,9 @@ package algorithms;
 import models.Particle;
 
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Off-Lattice implementation
@@ -18,19 +20,12 @@ public class EventDrivenMolecularDynamics {
 	private static List<List<CellParticle>> cells = new ArrayList<>();
 	private static double L;
 	private static int M;
-	private static double rc;
-	private static double n;
-	private static double s;
-	private static Stack<Double> orderValues;
 
 	public static void run(
 			List<Particle> particlesFromDynamic,
 			double boxSide,
 			int matrixSize,
-			double interactionRadius,
 			int limitTime,
-			double noise,
-			double speed,
 			StringBuffer buff
 	) throws CloneNotSupportedException {
 
@@ -43,17 +38,13 @@ public class EventDrivenMolecularDynamics {
 
 		// Below is previous run()
 
-		rc = interactionRadius;
 		M = matrixSize;
 		L = boxSide;
-		n = noise;
-		s = speed;
 		makeMatrix();
-		orderValues = new Stack<>();
 
 		// Particles for fixing Ovito grid
-		Particle dummy1 = new Particle(-1, 0);
-		Particle dummy2 = new Particle(0, 0);
+		Particle dummy1 = new Particle(-1, 0, 0);
+		Particle dummy2 = new Particle(0, 0, 0);
 		dummy1.setPosition(new Point2D.Double(0, 0));
 		dummy2.setPosition(new Point2D.Double(L, L));
 
@@ -70,7 +61,6 @@ public class EventDrivenMolecularDynamics {
 		}
 
 		// Save t = 0 order value
-		orderValues.push(getOrderValue(particlesFromDynamic));
 
 		// Do the off-lattice magic
 		for (int time = 0; time < limitTime; time++) {
@@ -98,7 +88,6 @@ public class EventDrivenMolecularDynamics {
 				for (CellParticle cp : cpList) {
 					Particle particle = cp.particle;
 					calculatePosition(particle);
-					calculateAngle(particle);
 					// For printing
 					particles.add(particle);
 				}
@@ -117,12 +106,8 @@ public class EventDrivenMolecularDynamics {
 				assignCell(particle);
 			}
 
-			orderValues.push(getOrderValue(particles));
+//			orderValues.push(getOrderValue(particles));
 		}
-	}
-
-	public static Stack<Double> getOrderValues() {
-		return orderValues;
 	}
 
 	private static List<List<CellParticle>> cloneMatrix(List<List<CellParticle>> cells) throws CloneNotSupportedException {
@@ -160,8 +145,8 @@ public class EventDrivenMolecularDynamics {
 	}
 
 	private static void calculatePosition(Particle p) {
-		p.getPosition().x += Math.cos(p.getAngle()) * s;
-		p.getPosition().y += Math.sin(p.getAngle()) * s;
+//		p.getPosition().x += Math.cos(p.getAngle()) * s; TODO: correct
+//		p.getPosition().y += Math.sin(p.getAngle()) * s;
 		if (p.getPosition().x >= L) {
 			p.getPosition().x -= L;
 		}
@@ -176,32 +161,6 @@ public class EventDrivenMolecularDynamics {
 		}
 	}
 
-	private static void calculateAngle(Particle particle) {
-		Double angle;
-		Set<Particle> neighbours = particle.getNeighbours();
-
-		// Average includes particle and its neighbours
-		double sin = Math.sin(particle.getAngle());
-		double cos = Math.cos(particle.getAngle());
-
-		for (Particle neighbour : neighbours) {
-			sin += Math.sin(neighbour.getAngle());
-			cos += Math.cos(neighbour.getAngle());
-		}
-
-		sin = sin / (neighbours.size() + 1);
-		cos = cos / (neighbours.size() + 1);
-		angle = Math.atan2(sin, cos);
-
-		double noise = n * (Math.random() - 1.0 / 2.0);
-		angle += noise;
-
-		particle.setAngle(angle);
-	}
-
-	/**
-	 * @param particle es la particula en cuestion en matriz CELL
-	 */
 	private static void visitNeighbour(Particle particle, double cellX, double cellY, List<List<CellParticle>> cells, List<List<CellParticle>> oldCells) {
 
 		// Reset neighbour cell indexes to comply with contour
@@ -253,20 +212,6 @@ public class EventDrivenMolecularDynamics {
 		}
 	}
 
-	private static double getOrderValue(List<Particle> particles) {
-		double totalVx = 0.0;
-		double totalVy = 0.0;
-
-		for (Particle p : particles) {
-			totalVx += s * Math.cos(p.getAngle());
-			totalVy += s * Math.sin(p.getAngle());
-		}
-
-		double totalVi = Math.sqrt(Math.pow(totalVx, 2) + Math.pow(totalVy, 2));
-
-		return totalVi / (particles.size() * s);
-	}
-
 	private static class CellParticle {
 		Particle particle;
 		Point2D.Double cellPosition;
@@ -281,11 +226,8 @@ public class EventDrivenMolecularDynamics {
 		return p.getId() + " " +
 				p.getPosition().x + " " +
 				p.getPosition().y + " " +
-				256 * Math.cos(p.getAngle()) + " " +
-				256 * Math.cos(p.getAngle() + ((2 * Math.PI) / 3)) + " " +
-				256 * Math.cos(p.getAngle() - ((2 * Math.PI) / 3)) + " " +
-				s * Math.cos(p.getAngle()) + " " +
-				s * Math.sin(p.getAngle())
+				p.getVelocity().x + " " +
+				p.getVelocity().y + " " //TODO: should colour come here as angle did in TP2?
 				;
 	}
 

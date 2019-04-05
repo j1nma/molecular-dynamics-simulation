@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -17,7 +18,7 @@ public class Parser {
 	private String staticFilePath;
 	private String dynamicFilePath;
 
-	private int numberOfParticles;
+	private int numberOfSmallParticles;
 	private double boxSide;
 	private Queue<Particle> particles;
 
@@ -40,9 +41,8 @@ public class Parser {
 			System.out.println("Static file not found exception: " + staticFilePath);
 			return false;
 		}
-		numberOfParticles = sc.nextInt();
-		boxSide = sc.nextDouble();
-		for (int i = 0; i < numberOfParticles; i++) {
+		numberOfSmallParticles = sc.nextInt();
+		for (int i = 0; i < numberOfSmallParticles; i++) {
 			double radius = sc.nextDouble();
 			double mass = sc.nextDouble();
 			particles.add(new Particle(i + 1, radius, mass));
@@ -60,8 +60,9 @@ public class Parser {
 			System.out.println("Dynamic file not found exception: " + dynamicFilePath);
 			return false;
 		}
-		sc.nextInt();   // t0 not used
-		for (int i = 0; i < numberOfParticles; i++) {
+		sc.nextInt();   // numberOfSmallParticles already caught in Static parser (in dynamic for ovito)
+		boxSide = sc.nextDouble();
+		for (int i = 0; i < numberOfSmallParticles; i++) {
 			double x = sc.nextDouble();
 			double y = sc.nextDouble();
 			double vx = sc.nextDouble();
@@ -91,12 +92,12 @@ public class Parser {
 		this.dynamicFilePath = dynamicFilePath;
 	}
 
-	public int getNumberOfParticles() {
-		return numberOfParticles;
+	public int getNumberOfSmallParticles() {
+		return numberOfSmallParticles;
 	}
 
-	public void setNumberOfParticles(int numberOfParticles) {
-		this.numberOfParticles = numberOfParticles;
+	public void setNumberOfSmallParticles(int numberOfSmallParticles) {
+		this.numberOfSmallParticles = numberOfSmallParticles;
 	}
 
 	public double getBoxSide() {
@@ -107,8 +108,8 @@ public class Parser {
 		this.boxSide = boxSide;
 	}
 
-	public Queue<Particle> getParticles() {
-		return particles;
+	public List<Particle> getParticles() {
+		return (List<Particle>) particles;
 	}
 
 	public void setParticles(Queue<Particle> particles) {
