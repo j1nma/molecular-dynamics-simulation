@@ -1,14 +1,18 @@
 package models;
 
-import java.awt.geom.Point2D;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.apache.commons.math3.util.FastMath;
+
+import java.text.DecimalFormat;
 
 public class Particle implements Cloneable {
 
 	private final int id;
-	private Point2D.Double position;
-	private Point2D.Double velocity;
+	private Vector2D position;
+	private Vector2D velocity;
 	private double radius;
 	private double mass;
+	private int collisionCount = 0;
 
 	public Particle(int id, double radius, double mass) {
 		this.id = id;
@@ -16,7 +20,6 @@ public class Particle implements Cloneable {
 		this.mass = mass;
 	}
 
-
 	/**
 	 * return the duration of time until the invoking particle collides with a vertical wall,
 	 * assuming it follows a straight-line trajectory. If the particle never collides with a vertical wall,
@@ -24,8 +27,12 @@ public class Particle implements Cloneable {
 	 *
 	 * @return duration of time until collision
 	 */
-	public double collidesX() {
-		return 0.0;
+	public double collidesX(double L) {
+		if (velocity.getX() > 0)
+			return (L - radius - position.getX()) / velocity.getX();
+		if (velocity.getX() < 0)
+			return (radius - position.getX()) / velocity.getX();
+		return -1;
 	}
 
 	/**
@@ -35,8 +42,12 @@ public class Particle implements Cloneable {
 	 *
 	 * @return duration of time until collision
 	 */
-	public double collidesY() {
-		return 0.0;
+	public double collidesY(double L) {
+		if (velocity.getY() > 0)
+			return (L - radius - position.getY()) / velocity.getY();
+		if (velocity.getY() < 0)
+			return (radius - position.getY()) / velocity.getY();
+		return -1;
 	}
 
 	/**
@@ -47,30 +58,61 @@ public class Particle implements Cloneable {
 	 * @return duration of time until collision
 	 */
 	public double collides(Particle b) {
-		return 0.0;
+		Vector2D dr = new Vector2D(this.position.getX() - b.position.getX(), this.position.getY() - b.position.getY());
+		Vector2D dv = new Vector2D(this.velocity.getX() - b.velocity.getX(), this.velocity.getY() - b.velocity.getY());
+		double dvdr = dv.dotProduct(dr);
+		if (dvdr >= 0)
+			return -1; // the quadratic equation has no solution for Δt > 0
+		double dvdv = dv.dotProduct(dv);
+		double drdr = dr.dotProduct(dr);
+		double sigma = this.radius + b.radius;
+		double d = FastMath.pow(dvdr, 2) - dvdv * (drdr - FastMath.pow(sigma, 2));
+		if (d < 0)
+			return -1; // the quadratic equation has no solution for Δt > 0
+		return -(dvdr + FastMath.sqrt(d)) / dvdv;
 	}
 
 	/**
 	 * update the invoking particle to simulate it bouncing off a vertical wall.
 	 */
 	public void bounceX() {
-
+		this.velocity = new Vector2D(-velocity.getX(), velocity.getY());
+		this.collisionCount++;
 	}
 
 	/**
 	 * update the invoking particle to simulate it bouncing off a horizontal wall.
 	 */
 	public void bounceY() {
-
+		this.velocity = new Vector2D(velocity.getX(), -velocity.getY());
+		this.collisionCount++;
 	}
 
 	/**
-	 * update both particles to simulate them bouncing off each other.
+	 * Update both particles to simulate them bouncing off each other.
+	 * <p>
+	 * When two hard discs collide, the normal force acts along the line connecting their centers
+	 * (assuming no friction or spin).
 	 *
 	 * @param b other particle in bounce
 	 */
 	public void bounce(Particle b) {
+		Vector2D dr = new Vector2D(this.position.getX() - b.position.getX(), this.position.getY() - b.position.getY());
+		Vector2D dv = new Vector2D(this.velocity.getX() - b.velocity.getX(), this.velocity.getY() - b.velocity.getY());
 
+		double dvdr = dv.dotProduct(dr);
+
+		// The impulse (Jx, Jy) due to the normal force in the x and y directions of a perfectly elastic collision at the moment of contact
+		double j = (2 * mass * b.mass * dvdr) / ((mass + b.mass) * (radius + b.radius));
+		double jx = j * dr.getX() / (radius + b.radius);
+		double jy = j * dr.getY() / (radius + b.radius);
+
+		// Once we know the impulse, we can apply Newton's second law (in momentum form) to compute the velocities immediately after the collision.
+		this.velocity = new Vector2D(velocity.getX() - jx / mass, velocity.getY() - jy / mass);
+		b.velocity = new Vector2D(b.velocity.getX() + jx / b.mass, b.velocity.getY() + jy / b.mass);
+
+		this.collisionCount++;
+		b.collisionCount++;
 	}
 
 	/**
@@ -79,15 +121,15 @@ public class Particle implements Cloneable {
 	 * @return total collisions
 	 */
 	public int getCollisionCount() {
-		return 0;
+		return collisionCount;
 	}
 
 	public void evolve(double time) {
-
+		position = position.add(time, velocity);
 	}
 
 	public double getKineticEnergy() {
-		return 0.0;
+		return 0.5 * mass * velocity.getNormSq();
 	}
 
 	@Override
@@ -105,52 +147,34 @@ public class Particle implements Cloneable {
 
 	@Override
 	public String toString() {
-		return "Particle{" +
-				"id=" + id +
-				", position=" + position +
-				", velocity=" + velocity +
-				", radius=" + radius +
-				", mass=" + mass +
-				'}';
+		DecimalFormat df = new DecimalFormat("###.0000000000");
+		return df.format(position.getX()) + " "
+				+ df.format(position.getY()) + " "
+				+ df.format(velocity.getX()) + " "
+				+ df.format(velocity.getY()) + " "
+				+ mass + " "
+				+ radius
+				+ df.format(getKineticEnergy()) + " ";
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	public Point2D.Double getPosition() {
+	public Vector2D getPosition() {
 		return position;
 	}
 
-	public void setPosition(Point2D.Double position) {
+	public void setPosition(Vector2D position) {
 		this.position = position;
 	}
 
-	public Point2D.Double getVelocity() {
+	public Vector2D getVelocity() {
 		return velocity;
 	}
 
-	public void setVelocity(Point2D.Double velocity) {
+	public void setVelocity(Vector2D velocity) {
 		this.velocity = velocity;
 	}
 
-	public double getRadius() {
-		return radius;
-	}
-
-	public void setRadius(double radius) {
-		this.radius = radius;
-	}
-
-	public double getMass() {
-		return mass;
-	}
-
-	public void setMass(double mass) {
-		this.mass = mass;
-	}
-
-	public Particle getClone() throws CloneNotSupportedException {
-		return (Particle) super.clone();
-	}
 }
