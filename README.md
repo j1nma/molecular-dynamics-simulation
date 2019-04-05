@@ -49,8 +49,7 @@ mvn clean package
 ## Execution
 ### Generation of static and dynamic files
 ```
-python3 generate.py 100 0.5 0.1 0.0005 0.1 0.005 100
-
+python3 generate.py N L maxVelocityModule smallParticleRadius smallParticleMass largeParticleRadius largeParticleMass
 ```
 
 [TODO]
