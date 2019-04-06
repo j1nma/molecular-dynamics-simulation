@@ -29,7 +29,10 @@ public class EventDrivenMolecularDynamics {
 		Particle dummy1 = new Particle(-1, 0, 0);
 		Particle dummy2 = new Particle(0, 0, 0);
 		dummy1.setPosition(new Vector2D(0, 0));
+		dummy1.setVelocity(new Vector2D(0,0));
 		dummy2.setPosition(new Vector2D(L, L));
+		dummy2.setVelocity(new Vector2D(0,0));
+
 
 		// Print dummy particles to simulation output file
 		buff.append(particlesFromDynamic.size() + 2).append("\n")
@@ -37,7 +40,7 @@ public class EventDrivenMolecularDynamics {
 				.append(particleToString(dummy1)).append("\n")
 				.append(particleToString(dummy2)).append("\n");
 
-		// Assign grid cell and print location
+		// Print location
 		for (Particle p : particlesFromDynamic) {
 			buff.append(particleToString(p)).append("\n");
 		}

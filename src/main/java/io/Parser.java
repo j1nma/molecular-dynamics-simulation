@@ -1,8 +1,8 @@
 package io;
 
 import models.Particle;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
-import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
@@ -63,14 +63,15 @@ public class Parser {
 		sc.nextInt();   // numberOfParticles already caught in Static parser (in dynamic for ovito)
 		boxSize = sc.nextDouble();
 		for (int i = 0; i < numberOfParticles; i++) {
+			sc.nextDouble(); // ignore id
 			double x = sc.nextDouble();
 			double y = sc.nextDouble();
 			double vx = sc.nextDouble();
 			double vy = sc.nextDouble();
 			Particle particle = particles.poll();
 			assert particle != null;
-			particle.setPosition(new Point2D.Double(x, y));
-			particle.setVelocity(new Point2D.Double(vx, vy));
+			particle.setPosition(new Vector2D(x, y));
+			particle.setVelocity(new Vector2D(vx, vy));
 			particles.add(particle);
 		}
 		sc.close();

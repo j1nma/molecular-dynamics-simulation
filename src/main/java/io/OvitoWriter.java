@@ -40,8 +40,8 @@ public class OvitoWriter<T extends Particle> {
 			// Write basic element data
 			fileWriter.write(String.format("%d\t%g\t%g",
 					particle.getId(),
-					particle.getPosition().x,
-					particle.getPosition().y))
+					particle.getPosition().getX(),
+					particle.getPosition().getY()))
 			;
 			// Write color
 			Color color = Color.RED;
