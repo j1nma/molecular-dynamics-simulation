@@ -17,15 +17,6 @@ public class SimulationOptions extends OptionsBase {
 	public boolean help;
 
 	@Option(
-			name = "matrix",
-			abbrev = 'M',
-			help = "Box division.",
-			category = "startup",
-			defaultValue = "10"
-	)
-	public int M;
-
-	@Option(
 			name = "staticFile",
 			abbrev = 's',
 			help = "Path to static file.",

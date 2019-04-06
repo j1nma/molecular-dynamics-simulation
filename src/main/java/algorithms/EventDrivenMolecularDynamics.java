@@ -13,14 +13,6 @@ import java.util.PriorityQueue;
  */
 public class EventDrivenMolecularDynamics {
 
-	/**
-	 * Cells from 0 to MxM - 1.
-	 * Each one has a list of CellParticles from that cell number.
-	 * A CellParticle contains a Particle and the cell's position.
-	 */
-	private static List<List<CellParticle>> cells = new ArrayList<>();
-	private static int M;
-
 	private static PriorityQueue<Event> pq = new PriorityQueue<>();
 	private static double L;
 	private static int tc;
@@ -28,13 +20,10 @@ public class EventDrivenMolecularDynamics {
 	public static void run(
 			List<Particle> particlesFromDynamic,
 			double boxSize,
-			int matrixSize,
 			int limitTime,
 			StringBuffer buff
 	) {
-		M = matrixSize;
 		L = boxSize;
-		makeMatrix();
 
 		// Particles for fixing Ovito grid
 		Particle dummy1 = new Particle(-1, 0, 0);
@@ -50,11 +39,8 @@ public class EventDrivenMolecularDynamics {
 
 		// Assign grid cell and print location
 		for (Particle p : particlesFromDynamic) {
-			assignCell(p);
 			buff.append(particleToString(p)).append("\n");
 		}
-
-		// Save t = 0 order value
 
 
 		// Main event-driven simulation loop
@@ -85,35 +71,6 @@ public class EventDrivenMolecularDynamics {
 
 	private static int calculateTimeUntilNextEvent() {
 		return 0;
-	}
-
-	private static void assignCell(Particle p) {
-		// Calculate particle's cell indexes
-		double cellX = Math.floor(p.getPosition().getX() / (L / M));
-		double cellY = Math.floor(p.getPosition().getY() / (L / M));
-
-		// Calculate particle's cell number
-		int cellNumber = (int) (cellY * M + cellX);
-
-		// Add particle to that cell with cell position
-		cells.get(cellNumber).add(new CellParticle(p, new Point2D.Double(cellX, cellY)));
-	}
-
-	private static void makeMatrix() {
-		cells = new ArrayList<>();
-		// Create cell grid
-		for (int i = 0; i < M * M; i++)
-			cells.add(new ArrayList<>());
-	}
-
-	private static class CellParticle {
-		Particle particle;
-		Point2D.Double cellPosition;
-
-		CellParticle(Particle particle, Point2D.Double cellPosition) {
-			this.particle = particle;
-			this.cellPosition = cellPosition;
-		}
 	}
 
 	private static String particleToString(Particle p) {

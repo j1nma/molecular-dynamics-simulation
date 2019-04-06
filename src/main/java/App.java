@@ -12,14 +12,13 @@ import java.util.List;
 
 public class App {
 
-	public static void main(String[] args) throws CloneNotSupportedException {
+	public static void main(String[] args) {
 		// Parse command line options
 		OptionsParser parser = OptionsParser.newOptionsParser(SimulationOptions.class);
 		parser.parseAndExitUponError(args);
 		SimulationOptions options = parser.getOptions(SimulationOptions.class);
 		assert options != null;
 		if (options.time <= 0
-				|| options.M <= 0
 				|| options.staticFile.isEmpty()
 				|| options.dynamicFile.isEmpty()) {
 			printUsage(parser);
@@ -35,15 +34,13 @@ public class App {
 		runAlgorithm(
 				particles,
 				staticAndDynamicParser.getBoxSize(),
-				options.M,
 				options.time
 		);
 	}
 
 	private static void runAlgorithm(List<Particle> particles,
 	                                 double L,
-	                                 int M,
-	                                 int time) throws CloneNotSupportedException {
+	                                 int time) {
 
 		StringBuffer buffer = new StringBuffer();
 		long startTime = System.currentTimeMillis();
@@ -51,7 +48,6 @@ public class App {
 		EventDrivenMolecularDynamics.run(
 				particles,
 				L,
-				M,
 				time,
 				buffer
 		);
