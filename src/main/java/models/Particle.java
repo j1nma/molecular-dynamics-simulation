@@ -36,8 +36,8 @@ public class Particle implements Cloneable {
 	}
 
 	/**
-	 * return the duration of time until the invoking particle collides with a vertical wall,
-	 * assuming it follows a straight-line trajectory. If the particle never collides with a vertical wall,
+	 * return the duration of time until the invoking particle collides with a horizontal wall,
+	 * assuming it follows a straight-line trajectory. If the particle never collides with a horizontal wall,
 	 * return a negative number.
 	 *
 	 * @return duration of time until collision
