@@ -37,7 +37,7 @@ for i in range(0, len(simulation_data_values)):
 		values = []
 		# Generate array of all noises
 		for e in etha_values:
-			command = 'java -jar ../target/tp2-1.0-SNAPSHOT.jar --dynamicFile=Dynamic-N={n}.txt --radius={rc} --matrix={matrix} --noise={noise} --speed={defaultVelocity} --time={time} --boxSide={L}'.format(
+			command = 'java -jar ../target/tp2-1.0-SNAPSHOT.jar --dynamicFile=Dynamic-N={n}.txt --radius={rc} --matrix={matrix} --noise={noise} --speed={defaultVelocity} --time={time} --boxSize={L}'.format(
 								n=N,
 								rc= rc,
 								matrix=M,
@@ -55,10 +55,10 @@ for i in range(0, len(simulation_data_values)):
 			number = number.replace('\n', '')
 			values.append(float(number))
 		file_values[k] = values;
-	with open('{dirName}/N={n}-L={boxSide}-M={matrix}.txt'.format(
+	with open('{dirName}/N={n}-L={boxSize}-M={matrix}.txt'.format(
 		dirName=dirName,
 		n=N,
-		boxSide=L,
+		boxSize=L,
 		matrix=M), 'w') as f:
 		f.write(' '.join([str(x) for x in numpy.mean(file_values, axis=0)]))
 		f.write('\n')

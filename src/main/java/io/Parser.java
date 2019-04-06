@@ -1,11 +1,12 @@
 package io;
 
 import models.Particle;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
-import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -18,7 +19,7 @@ public class Parser {
 	private String dynamicFilePath;
 
 	private int numberOfParticles;
-	private double boxSide;
+	private double boxSize;
 	private Queue<Particle> particles;
 
 	public Parser(String staticFilePath, String dynamicFilePath) {
@@ -40,8 +41,7 @@ public class Parser {
 			System.out.println("Static file not found exception: " + staticFilePath);
 			return false;
 		}
-		numberOfParticles = sc.nextInt();
-		boxSide = sc.nextDouble();
+		numberOfParticles = sc.nextInt() + 1;// + 1 for large particle
 		for (int i = 0; i < numberOfParticles; i++) {
 			double radius = sc.nextDouble();
 			double mass = sc.nextDouble();
@@ -60,15 +60,18 @@ public class Parser {
 			System.out.println("Dynamic file not found exception: " + dynamicFilePath);
 			return false;
 		}
-		sc.nextInt();   // t0 not used
+		sc.nextInt();   // numberOfParticles already caught in Static parser (in dynamic for ovito)
+		boxSize = sc.nextDouble();
 		for (int i = 0; i < numberOfParticles; i++) {
+			sc.nextDouble(); // ignore id
 			double x = sc.nextDouble();
 			double y = sc.nextDouble();
 			double vx = sc.nextDouble();
 			double vy = sc.nextDouble();
 			Particle particle = particles.poll();
-			particle.setPosition(new Point2D.Double(x, y));
-			particle.setVelocity(new Point2D.Double(vx, vy));
+			assert particle != null;
+			particle.setPosition(new Vector2D(x, y));
+			particle.setVelocity(new Vector2D(vx, vy));
 			particles.add(particle);
 		}
 		sc.close();
@@ -99,16 +102,16 @@ public class Parser {
 		this.numberOfParticles = numberOfParticles;
 	}
 
-	public double getBoxSide() {
-		return boxSide;
+	public double getBoxSize() {
+		return boxSize;
 	}
 
-	public void setBoxSide(double boxSide) {
-		this.boxSide = boxSide;
+	public void setBoxSize(double boxSize) {
+		this.boxSize = boxSize;
 	}
 
-	public Queue<Particle> getParticles() {
-		return particles;
+	public List<Particle> getParticles() {
+		return (List<Particle>) particles;
 	}
 
 	public void setParticles(Queue<Particle> particles) {
