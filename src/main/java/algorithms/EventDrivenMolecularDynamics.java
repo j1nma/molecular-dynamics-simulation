@@ -172,7 +172,7 @@ public class EventDrivenMolecularDynamics {
 	 * a collision between two particles,
 	 * and a redraw event.
 	 */
-	private static class Event {
+	private static class Event implements Comparable<Event> {
 
 		private double t;
 		private Particle particle1;
