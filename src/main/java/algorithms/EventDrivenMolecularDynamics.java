@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
- * Off-Lattice implementation
+ * Brownian motion implementation
  */
 public class EventDrivenMolecularDynamics {
 
@@ -75,7 +75,6 @@ public class EventDrivenMolecularDynamics {
 
 			// Determine all future collisions that would occur involving either i or j, assuming all particles move
 			// in straight line trajectories from time t onwards. Insert these events onto the priority queue.
-
 			determineFutureCollisions(nextEvent.particle1, particlesFromDynamic);
 			determineFutureCollisions(nextEvent.particle2, particlesFromDynamic);
 
