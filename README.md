@@ -63,14 +63,12 @@ python [TODO]
 java -jar [TODO]
 ```
 
-Options [TODO]:
+Options:
 
-* **-h, --help**: Prints usage infp.
-* **-M, --matrix &lt;size>**: Size of the squared matrix.
-* **-r, --radius &lt;double>**: Interaction radius.
-* **--pbc**: Enable periodic boundary conditions.
-* **--bf**: Enable brute force algorithm.
+* **-h, --help**: Prints usage info.
+* **--staticFile &lt;path>**: Path to static file.
 * **--dynamicFile &lt;path>**: Path to dynamic file.
+* **-t, --time>**: Max time of simulation.
 
 The simulation's results [TODO] to `ovito_file.txt`.
 
