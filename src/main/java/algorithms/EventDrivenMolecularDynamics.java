@@ -3,6 +3,8 @@ package algorithms;
 import models.Particle;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -19,9 +21,9 @@ public class EventDrivenMolecularDynamics {
 	public static void run(
 			List<Particle> particlesFromDynamic,
 			double boxSize,
-			int limitTime,
-			StringBuffer buff
-	) {
+			double limitTime,
+			StringBuffer buff,
+			PrintWriter eventWriter) {
 		L = boxSize;
 
 		// Particles for fixing Ovito grid
@@ -46,23 +48,24 @@ public class EventDrivenMolecularDynamics {
 
 		// Determine all future collisions that would occur involving either i or j, assuming all particles move
 		// in straight line trajectories from time t onwards. Insert these events onto the priority queue.
-		determineFutureCollisions(particlesFromDynamic);
+		determineFutureCollisions(particlesFromDynamic, limitTime);
 
 		// Set last event time as 0
 		lastEventTime = 0.0;
 
 		// Main event-driven simulation loop
-		while (currentSimulationTime < limitTime) {
+		while (!pq.isEmpty()) {
 			// Delete the impending event, i.e., the one with the minimum priority t.
 			Event nextEvent = pq.poll();
 
 			// If the event corresponds to an invalidated collision, discard it. The event is invalid if one of the particles has
 			//participated in a collision since the event was inserted onto the priority queue.
+			assert nextEvent != null;
 			if (nextEvent.wasSuperveningEvent())
 				continue;
 
 			currentSimulationTime = nextEvent.getTime();
-
+			System.out.println(currentSimulationTime);
 			// If the event corresponds to a physical collision between particles i and j:
 
 			// Advance all particles to time t along a straight line trajectory.
@@ -73,10 +76,15 @@ public class EventDrivenMolecularDynamics {
 			// thing for particle i.
 			updateVelocities(nextEvent.particle1, nextEvent.particle2);
 
+			// Write time of collision
+			eventWriter.println(currentSimulationTime - lastEventTime);
+
 			// Determine all future collisions that would occur involving either i or j, assuming all particles move
 			// in straight line trajectories from time t onwards. Insert these events onto the priority queue.
-			determineFutureCollisions(nextEvent.particle1, particlesFromDynamic);
-			determineFutureCollisions(nextEvent.particle2, particlesFromDynamic);
+			if (nextEvent.particle1 != null)
+				determineFutureCollisions(nextEvent.particle1, particlesFromDynamic, limitTime);
+			if (nextEvent.particle2 != null)
+				determineFutureCollisions(nextEvent.particle2, particlesFromDynamic, limitTime);
 
 			lastEventTime = currentSimulationTime;
 		}
@@ -98,61 +106,49 @@ public class EventDrivenMolecularDynamics {
 		}
 	}
 
-	private static void determineFutureCollisions(Particle p1, List<Particle> particles) {
+	private static void determineFutureCollisions(Particle p1, List<Particle> particles, double limitTime) {
 		// Collisions with walls
-		calculateCollisionWithWalls(p1);
+		calculateCollisionWithWalls(p1, limitTime);
 
 		// Collisions with other particles
 		for (Particle p2 : particles) {
 			if (p1 != p2) {
-				calculateCollisionBetweenParticles(p1, p2);
+				calculateCollisionBetweenParticles(p1, p2, limitTime);
 			}
 		}
 	}
 
-	private static void determineFutureCollisions(List<Particle> particles) {
+	private static void determineFutureCollisions(List<Particle> particles, double limitTime) {
 		for (Particle p1 : particles) {
 			// Collisions with walls
-			calculateCollisionWithWalls(p1);
+			calculateCollisionWithWalls(p1, limitTime);
 
 			// Collisions between particles
 			for (Particle p2 : particles) {
 				if (p1 != p2) {
-					calculateCollisionBetweenParticles(p1, p2);
+					calculateCollisionBetweenParticles(p1, p2, limitTime);
 				}
 			}
 		}
 	}
 
-	private static void calculateCollisionWithWalls(Particle p1) {
+	private static void calculateCollisionWithWalls(Particle p1, double limitTime) {
 		double tcX = p1.collidesX(L);
 		double tcY = p1.collidesY(L);
-		if (tcX >= 0) {
+		if (tcX >= 0 && currentSimulationTime + tcX <= limitTime) {
 			pq.offer(new Event(currentSimulationTime + tcX, p1, null));
 		}
-		if (tcY >= 0) {
+		if (tcY >= 0 && currentSimulationTime + tcY <= limitTime) {
 			pq.offer(new Event(currentSimulationTime + tcY, null, p1));
 		}
 	}
 
-	private static void calculateCollisionBetweenParticles(Particle p1, Particle p2) {
+	private static void calculateCollisionBetweenParticles(Particle p1, Particle p2, double limitTime) {
 		double tc = p1.collides(p2);
-		if (tc >= 0) {
+		if (tc >= 0 && currentSimulationTime + tc <= limitTime) {
 			pq.offer(new Event(currentSimulationTime + tc, p1, p2));
 		}
 	}
-
-//	private static void storeSystemState(List<Particle> particlesFromDynamic, int tc) {
-//
-//	}
-//
-//	private static void evolveParticlesUntilTc(List<Particle> particlesFromDynamic, int tc) {
-//
-//	}
-//
-//	private static int calculateTimeUntilNextEvent() {
-//		return 0;
-//	}
 
 	private static String particleToString(Particle p) {
 		return p.getId() + " " +
