@@ -3,7 +3,6 @@ package algorithms;
 import models.Particle;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -22,6 +21,7 @@ public class EventDrivenMolecularDynamics {
 			List<Particle> particlesFromDynamic,
 			double boxSize,
 			double limitTime,
+			int maxEvents,
 			StringBuffer buff,
 			PrintWriter eventWriter) {
 		L = boxSize;
@@ -53,6 +53,8 @@ public class EventDrivenMolecularDynamics {
 		// Set last event time as 0
 		lastEventTime = 0.0;
 
+		int evolutions = 0;
+
 		// Main event-driven simulation loop
 		while (!pq.isEmpty()) {
 			// Delete the impending event, i.e., the one with the minimum priority t.
@@ -63,6 +65,9 @@ public class EventDrivenMolecularDynamics {
 			assert nextEvent != null;
 			if (nextEvent.wasSuperveningEvent())
 				continue;
+
+			if (maxEvents < (1 + evolutions)) break;
+			evolutions++;
 
 			currentSimulationTime = nextEvent.getTime();
 			System.out.println(currentSimulationTime);

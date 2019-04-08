@@ -43,4 +43,13 @@ public class SimulationOptions extends OptionsBase {
 	)
 	public double time;
 
+	@Option(
+			name = "maxEvents",
+			abbrev = 'e',
+			help = "Maximum number of events.",
+			category = "startup",
+			defaultValue = "20000"
+	)
+	public int maxEvents;
+
 }

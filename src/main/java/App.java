@@ -25,6 +25,7 @@ public class App {
 		SimulationOptions options = parser.getOptions(SimulationOptions.class);
 		assert options != null;
 		if (options.time <= 0
+				|| options.maxEvents <= 0
 				|| options.staticFile.isEmpty()
 				|| options.dynamicFile.isEmpty()) {
 			printUsage(parser);
@@ -42,13 +43,15 @@ public class App {
 		runAlgorithm(
 				particles,
 				staticAndDynamicParser.getBoxSize(),
-				options.time
+				options.time,
+				options.maxEvents
 		);
 	}
 
 	private static void runAlgorithm(List<Particle> particles,
 	                                 double L,
-	                                 double limitTime) throws IOException {
+	                                 double limitTime,
+	                                 int maxEvents) {
 
 		StringBuffer buffer = new StringBuffer();
 		long startTime = System.currentTimeMillis();
@@ -57,6 +60,7 @@ public class App {
 				particles,
 				L,
 				limitTime,
+				maxEvents,
 				buffer,
 				eventWriter
 		);
