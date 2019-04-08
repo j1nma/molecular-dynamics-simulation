@@ -5,14 +5,20 @@ import io.Parser;
 import io.SimulationOptions;
 import models.Particle;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
 public class App {
 
-	public static void main(String[] args) {
+	private static final String COLLISION_FREQUENCY_FILE = "./output/collision_frequency.txt";
+	private static PrintWriter eventWriter;
+
+
+	public static void main(String[] args) throws IOException {
 		// Parse command line options
 		OptionsParser parser = OptionsParser.newOptionsParser(SimulationOptions.class);
 		parser.parseAndExitUponError(args);
@@ -30,6 +36,8 @@ public class App {
 
 		List<Particle> particles = staticAndDynamicParser.getParticles();
 
+		eventWriter = new PrintWriter(new FileWriter(COLLISION_FREQUENCY_FILE));
+
 		// Run algorithm
 		runAlgorithm(
 				particles,
@@ -40,7 +48,7 @@ public class App {
 
 	private static void runAlgorithm(List<Particle> particles,
 	                                 double L,
-	                                 int time) {
+	                                 double limitTime) throws IOException {
 
 		StringBuffer buffer = new StringBuffer();
 		long startTime = System.currentTimeMillis();
@@ -48,8 +56,9 @@ public class App {
 		EventDrivenMolecularDynamics.run(
 				particles,
 				L,
-				time,
-				buffer
+				limitTime,
+				buffer,
+				eventWriter
 		);
 
 		long stopTime = System.currentTimeMillis();
