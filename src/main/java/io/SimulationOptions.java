@@ -48,7 +48,7 @@ public class SimulationOptions extends OptionsBase {
 			abbrev = 'e',
 			help = "Maximum number of events.",
 			category = "startup",
-			defaultValue = "20000"
+			defaultValue = "10000000"
 	)
 	public int maxEvents;
 

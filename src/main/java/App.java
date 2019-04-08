@@ -5,6 +5,7 @@ import io.Parser;
 import io.SimulationOptions;
 import models.Particle;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,7 +15,8 @@ import java.util.List;
 
 public class App {
 
-	private static final String COLLISION_FREQUENCY_FILE = "./output/collision_frequency.txt";
+	private static final String OUTPUT_DIRECTORY = "./output";
+	private static final String COLLISION_FREQUENCY_FILE = OUTPUT_DIRECTORY + "/collision_frequency.txt";
 	private static PrintWriter eventWriter;
 
 
@@ -36,6 +38,12 @@ public class App {
 		if (!staticAndDynamicParser.parse()) return;
 
 		List<Particle> particles = staticAndDynamicParser.getParticles();
+
+		// Create output directory if non-existent
+		File directory = new File(OUTPUT_DIRECTORY);
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
 
 		eventWriter = new PrintWriter(new FileWriter(COLLISION_FREQUENCY_FILE));
 
