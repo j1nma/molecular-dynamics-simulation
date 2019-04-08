@@ -117,7 +117,8 @@ public class EventDrivenMolecularDynamics {
 
 		// Collisions with other particles
 		for (Particle p2 : particles) {
-			if (p1 != p2) {
+			// Don't calculate collisions twice (nor with the same particle)
+			if (p1.getId() < p2.getId()) {
 				calculateCollisionBetweenParticles(p1, p2, limitTime);
 			}
 		}
@@ -125,15 +126,7 @@ public class EventDrivenMolecularDynamics {
 
 	private static void determineFutureCollisions(List<Particle> particles, double limitTime) {
 		for (Particle p1 : particles) {
-			// Collisions with walls
-			calculateCollisionWithWalls(p1, limitTime);
-
-			// Collisions between particles
-			for (Particle p2 : particles) {
-				if (p1 != p2) {
-					calculateCollisionBetweenParticles(p1, p2, limitTime);
-				}
-			}
+			determineFutureCollisions(p1, particles, limitTime);
 		}
 	}
 
