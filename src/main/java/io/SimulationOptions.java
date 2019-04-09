@@ -35,12 +35,30 @@ public class SimulationOptions extends OptionsBase {
 	public String dynamicFile;
 
 	@Option(
+			name = "boxSize",
+			abbrev = 'l',
+			help = "Size of box.",
+			category = "startup",
+			defaultValue = "0.5"
+	)
+	public double boxSize;
+
+	@Option(
 			name = "time",
 			abbrev = 't',
 			help = "Time of simulation.",
 			category = "startup",
-			defaultValue = "100"
+			defaultValue = "60.0"
 	)
-	public int time;
+	public double time;
+
+	@Option(
+			name = "maxEvents",
+			abbrev = 'e',
+			help = "Maximum number of events.",
+			category = "startup",
+			defaultValue = "10000000"
+	)
+	public int maxEvents;
 
 }

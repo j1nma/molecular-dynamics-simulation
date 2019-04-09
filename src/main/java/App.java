@@ -5,20 +5,28 @@ import io.Parser;
 import io.SimulationOptions;
 import models.Particle;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
 public class App {
 
-	public static void main(String[] args) {
+	private static final String COLLISION_FREQUENCY_FILE = "./collision_frequency.txt";
+	private static PrintWriter eventWriter;
+
+	public static void main(String[] args) throws IOException {
+
 		// Parse command line options
 		OptionsParser parser = OptionsParser.newOptionsParser(SimulationOptions.class);
 		parser.parseAndExitUponError(args);
 		SimulationOptions options = parser.getOptions(SimulationOptions.class);
 		assert options != null;
 		if (options.time <= 0
+				|| options.maxEvents <= 0
+				|| options.boxSize <= 0
 				|| options.staticFile.isEmpty()
 				|| options.dynamicFile.isEmpty()) {
 			printUsage(parser);
@@ -27,20 +35,24 @@ public class App {
 		// Parse static and dynamic files
 		Parser staticAndDynamicParser = new Parser(options.staticFile, options.dynamicFile);
 		if (!staticAndDynamicParser.parse()) return;
-
 		List<Particle> particles = staticAndDynamicParser.getParticles();
+
+		// Initialize file writers
+		eventWriter = new PrintWriter(new FileWriter(COLLISION_FREQUENCY_FILE));
 
 		// Run algorithm
 		runAlgorithm(
 				particles,
-				staticAndDynamicParser.getBoxSize(),
-				options.time
+				options.boxSize,
+				options.time,
+				options.maxEvents
 		);
 	}
 
 	private static void runAlgorithm(List<Particle> particles,
 	                                 double L,
-	                                 int time) {
+	                                 double limitTime,
+	                                 int maxEvents) {
 
 		StringBuffer buffer = new StringBuffer();
 		long startTime = System.currentTimeMillis();
@@ -48,14 +60,17 @@ public class App {
 		EventDrivenMolecularDynamics.run(
 				particles,
 				L,
-				time,
-				buffer
+				limitTime,
+				maxEvents,
+				buffer,
+				eventWriter
 		);
 
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
 
-		System.out.println("Event Driven Molecular Dynamics execution time: " + elapsedTime + "ms");
+		System.out.println("======================== Results ========================");
+		System.out.println("Event Driven Molecular Dynamics execution time (ms):\t" + elapsedTime);
 
 		OvitoWriter<Particle> ovitoWriter;
 		try {
@@ -66,7 +81,8 @@ public class App {
 			e.printStackTrace();
 		}
 
-//		System.out.println(OffLattice.getOrderValues().peek());
+		System.out.println("Average time between collisions (ms):\t" +
+				EventDrivenMolecularDynamics.getAverageTimeBetweenCollisions());
 
 //		OctaveWriter octaveWriter;
 //		try {
