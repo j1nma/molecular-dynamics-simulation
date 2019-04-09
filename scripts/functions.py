@@ -45,7 +45,7 @@ def generate_dynamic_file(name, number_of_small_particles, area_length, max_velo
             f.write('{}\t{}\t{}\t{}\t{}\n'.format(i + 2, x, y, vx, vy))
 
 def generate_files(number_of_small_particles, area_length, max_velocity_module, particle_radius, particle_mass, large_particle_radius, large_particle_mass):
-    dirName = '../data';
+    dirName = './data';
     if not os.path.exists(dirName):
             os.mkdir(dirName)
             print("Directory " , dirName ,  " Created ")
