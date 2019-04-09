@@ -50,9 +50,8 @@ public class EventDrivenMolecularDynamics {
 			// Print location
 			buff.append(particleToString(p)).append("\n");
 
-			// Write speeds at t = 0, except for big speed
-			if (p.getId() != 1)
-				initialSpeedsWriter.println(p.getSpeed());
+			// Write speeds at t = 0
+			initialSpeedsWriter.println(p.getSpeed());
 		}
 
 		// Last third times
@@ -94,6 +93,7 @@ public class EventDrivenMolecularDynamics {
 
 			// Write time between collisions
 			eventWriter.println(currentSimulationTime - lastEventTime);
+			System.out.println(currentSimulationTime);
 			timesBetweenCollision.add(currentSimulationTime - lastEventTime);
 
 			// Save speeds for last third of simulation

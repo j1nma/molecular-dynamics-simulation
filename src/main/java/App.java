@@ -89,7 +89,7 @@ public class App {
 			e.printStackTrace();
 		}
 
-		System.out.println("Average time between collisions (ms):\t" +
+		System.out.println("Average time between collisions (s):\t" +
 				EventDrivenMolecularDynamics.getAverageTimeBetweenCollisions());
 
 //		OctaveWriter octaveWriter;
