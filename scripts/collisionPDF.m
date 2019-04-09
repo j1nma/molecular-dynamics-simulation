@@ -12,7 +12,7 @@ bar(xx, nn);
 xlabel("Tiempo entre colisiones(s)", 'fontsize', 16);
 ylabel("Cantidad colisiones por unidad de tiempo", 'fontsize', 16);
 set(gca, 'fontsize', 18);
-axis([0 0.15])
+axis([0 maxTime])
 grid on
 
 print(sprintf("../output/collisionFrequency/Histogram-collision-frequency-N=%d.jpg", N), "-djpg")
@@ -23,7 +23,7 @@ bar(xx, nn ./ (count * (xx(2) - xx(1))));
 xlabel("Tiempo entre colisiones(s)", 'fontsize', 16);
 ylabel("Densidad de probabilidad", 'fontsize', 16);
 set(gca, 'fontsize', 18);
-axis([0 0.15])
+axis([0 maxTime])
 grid on
 
 print(sprintf("../output/collisionFrequency/PDF-collision-frequency-N=%d.jpg", N), "-djpg")
