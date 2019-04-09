@@ -52,34 +52,31 @@ mvn clean package
 python3 generate.py N L maxVelocityModule smallParticleRadius smallParticleMass largeParticleRadius largeParticleMass
 ```
 
-[TODO]
-```
-python [TODO]
-```
-
 ### Running simulation
 
 ```
-java -jar [TODO]
+java -jar --staticFile=data/Static-N=100.txt --dynamicFile=data/Dynamic-N=100.txt --time=100
 ```
 
 Options:
 
 * **-h, --help**: Prints usage info.
+* **-l, --boxSize**: Size of box. Default at 0.5.
 * **--staticFile &lt;path>**: Path to static file.
 * **--dynamicFile &lt;path>**: Path to dynamic file.
-* **-t, --time>**: Max time of simulation.
+* **-t, --time>**: Maximum time of simulation. Default at 60.
+* **-e, --maxEvents>**: Maximum number of events. Default at 10000000.
 
-The simulation's results [TODO] to `ovito_file.txt`.
+The simulation's results are at `./output/ovito_file.txt`.
 
-### Run script to [TODO]
-
-```
-python3 scripts/[TODO].py
-```
-
-### (Octave) Run script to graph [TODO]
+### Run script to generate calculations
 
 ```
-run("[TODO].m")
+python3 scripts/calculations.py
+```
+
+### (Octave) Run script to graph calculations
+
+```
+scripts/[collisionPDF | lastThirdSpeedsPDF]
 ```

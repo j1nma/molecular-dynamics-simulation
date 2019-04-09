@@ -46,7 +46,7 @@ public class SimulationOptions extends OptionsBase {
 	@Option(
 			name = "time",
 			abbrev = 't',
-			help = "Time of simulation.",
+			help = "Maximum time of simulation.",
 			category = "startup",
 			defaultValue = "60.0"
 	)
