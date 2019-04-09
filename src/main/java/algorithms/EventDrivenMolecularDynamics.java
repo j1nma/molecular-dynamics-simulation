@@ -17,9 +17,7 @@ public class EventDrivenMolecularDynamics {
 	private static PriorityQueue<Event> pq = new PriorityQueue<>();
 	private static double L;
 	private static double currentSimulationTime = 0.0;
-
 	private static List<Double> timesBetweenCollision = new LinkedList<>();
-
 
 	public static void run(
 			List<Particle> particlesFromDynamic,
@@ -29,7 +27,8 @@ public class EventDrivenMolecularDynamics {
 			StringBuffer buff,
 			PrintWriter eventWriter,
 			PrintWriter initialSpeedsWriter,
-			PrintWriter lastThirdSpeedsWriter) {
+			PrintWriter lastThirdSpeedsWriter,
+			PrintWriter bigParticleTrajectoryWriter) {
 		L = boxSize;
 
 		// Particles for fixing Ovito grid
@@ -120,12 +119,18 @@ public class EventDrivenMolecularDynamics {
 				}
 			}
 
+			if (evolutions % 75 == 0) {
+				// Write big particle position for trajectory
+				bigParticleTrajectoryWriter.println(particlesFromDynamic.get(0).getPosition().toString());
+			}
+
 			lastEventTime = currentSimulationTime;
 		}
 
 		eventWriter.close();
 		initialSpeedsWriter.close();
 		lastThirdSpeedsWriter.close();
+		bigParticleTrajectoryWriter.close();
 	}
 
 	public static double getAverageTimeBetweenCollisions() {
