@@ -55,9 +55,11 @@ for k in range(0, times):
 	values[k] = float(number)
 	print(values[k])
 
-with open('{dirName}/Mean-and-Std-N={N}.txt'.format(
+with open('{dirName}/Mean-and-Std-N={N}-times={times}.txt'.format(
 	dirName = dirName,
-	N = N), 'w') as f:
+	N = N,
+	times = times
+	), 'w') as f:
 	f.write(str(1 / numpy.mean(values)))
 	f.write('\n')
 	f.write(str(numpy.mean(values)))
