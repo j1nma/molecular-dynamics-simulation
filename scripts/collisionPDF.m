@@ -1,4 +1,4 @@
-data = load('./collision_frequency.txt');
+data = load('../output/collisionFrequency/collision_frequency.txt');
 N = 100;
 count = numel(data)
 dataMean = mean(data)

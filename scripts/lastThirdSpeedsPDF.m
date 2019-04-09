@@ -14,7 +14,7 @@ set(gca, 'fontsize', 18);
 axis([0 maxSpeed])
 grid on
 
-data2 = load('./last_third_speeds.txt');
+data2 = load('../output/lastThirdSpeeds/last_third_speeds.txt');
 count2 = numel(data2)
 dataMean2 = mean(data2)
 maxSpeed2 = max(data2)
