@@ -2,9 +2,9 @@ data = load('./collision_frequency.txt');
 N = 100;
 count = numel(data)
 dataMean = mean(data)
-maxy = max(data)
-sprintf("Frecuencia de Colisiones =  %d", 1/dataMean)
-xRange = 0:0.001:maxy;
+maxTime = max(data)
+sprintf("Frecuencia de Colisiones = %d", 1/dataMean)
+xRange = 0:0.001:maxTime;
 
 figure(1)
 [nn, xx] = hist(data, 2*N); %# Bin the data
