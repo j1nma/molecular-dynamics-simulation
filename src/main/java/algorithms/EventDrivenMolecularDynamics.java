@@ -20,13 +20,16 @@ public class EventDrivenMolecularDynamics {
 
 	private static List<Double> timesBetweenCollision = new LinkedList<>();
 
+
 	public static void run(
 			List<Particle> particlesFromDynamic,
 			double boxSize,
 			double limitTime,
 			int maxEvents,
 			StringBuffer buff,
-			PrintWriter eventWriter) {
+			PrintWriter eventWriter,
+			PrintWriter initialSpeedsWriter,
+			PrintWriter lastThirdSpeedsWriter) {
 		L = boxSize;
 
 		// Particles for fixing Ovito grid
@@ -37,17 +40,22 @@ public class EventDrivenMolecularDynamics {
 		dummy2.setPosition(new Vector2D(L, L));
 		dummy2.setVelocity(new Vector2D(0, 0));
 
-
 		// Print dummy particles to simulation output file
 		buff.append(particlesFromDynamic.size() + 2).append("\n")
 				.append(0 + "\n")
 				.append(particleToString(dummy1)).append("\n")
 				.append(particleToString(dummy2)).append("\n");
 
-		// Print location
 		for (Particle p : particlesFromDynamic) {
+			// Print location
 			buff.append(particleToString(p)).append("\n");
+
+			// Write speeds at t = 0
+			initialSpeedsWriter.println(p.getSpeed());
 		}
+
+		// Last third times
+		double lastThirdTime = limitTime * (2.0 / 3);
 
 		// Determine all future collisions that would occur involving either i or j, assuming all particles move
 		// in straight line trajectories from time t onwards. Insert these events onto the priority queue.
@@ -87,6 +95,10 @@ public class EventDrivenMolecularDynamics {
 			eventWriter.println(currentSimulationTime - lastEventTime);
 			timesBetweenCollision.add(currentSimulationTime - lastEventTime);
 
+			// Save speeds for last third of simulation
+			if (currentSimulationTime >= lastThirdTime)
+				particlesFromDynamic.forEach(p -> lastThirdSpeedsWriter.println(p.getSpeed()));
+
 			// Determine all future collisions that would occur involving either i or j, assuming all particles move
 			// in straight line trajectories from time t onwards. Insert these events onto the priority queue.
 			if (nextEvent.particle1 != null)
@@ -94,8 +106,26 @@ public class EventDrivenMolecularDynamics {
 			if (nextEvent.particle2 != null)
 				determineFutureCollisions(nextEvent.particle2, particlesFromDynamic, limitTime);
 
+			if (evolutions % 100 == 0) {
+				// Print event
+				// Print dummy particles to simulation output file
+				buff.append(particlesFromDynamic.size() + 2).append("\n")
+						.append(currentSimulationTime + "\n")
+						.append(particleToString(dummy1)).append("\n")
+						.append(particleToString(dummy2)).append("\n");
+
+				// Print location
+				for (Particle p : particlesFromDynamic) {
+					buff.append(particleToString(p)).append("\n");
+				}
+			}
+
 			lastEventTime = currentSimulationTime;
 		}
+
+		eventWriter.close();
+		initialSpeedsWriter.close();
+		lastThirdSpeedsWriter.close();
 	}
 
 	public static double getAverageTimeBetweenCollisions() {
@@ -160,7 +190,8 @@ public class EventDrivenMolecularDynamics {
 				p.getPosition().getX() + " " +
 				p.getPosition().getY() + " " +
 				p.getVelocity().getX() + " " +
-				p.getVelocity().getY() + " " //TODO: should colour come here as angle did in TP2?
+				p.getVelocity().getY() + " " +
+				p.getRadius() + " "
 				;
 	}
 
