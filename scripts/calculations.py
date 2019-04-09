@@ -21,15 +21,15 @@ lastThirdSpeedsDirName = dirName + '/lastThirdSpeeds';
 
 if not os.path.exists(dirName):
         os.mkdir(dirName)
-        print("Directory " , dirName ,  " Created ")
+        print("Directory ", dirName, " created.")
 
 if not os.path.exists(lastThirdSpeedsDirName):
         os.mkdir(lastThirdSpeedsDirName)
-        print("Directory " , lastThirdSpeedsDirName ,  " Created ")
+        print("Directory ", lastThirdSpeedsDirName, " created.")
 
 if not os.path.exists(collisionFrequencyDirName):
         os.mkdir(collisionFrequencyDirName)
-        print("Directory " , collisionFrequencyDirName ,  " Created ")
+        print("Directory ", collisionFrequencyDirName, " created.")
 
 times = 3
 
