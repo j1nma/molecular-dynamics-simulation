@@ -5,10 +5,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Parser for static and dynamic files.
@@ -17,9 +14,7 @@ public class Parser {
 
 	private String staticFilePath;
 	private String dynamicFilePath;
-
 	private int numberOfParticles;
-	private double boxSize;
 	private Queue<Particle> particles;
 
 	public Parser(String staticFilePath, String dynamicFilePath) {
@@ -61,7 +56,6 @@ public class Parser {
 			return false;
 		}
 		sc.nextInt();   // numberOfParticles already caught in Static parser (in dynamic for ovito)
-		boxSize = sc.nextDouble();
 		for (int i = 0; i < numberOfParticles; i++) {
 			sc.nextDouble(); // ignore id
 			double x = sc.nextDouble();
@@ -78,43 +72,8 @@ public class Parser {
 		return true;
 	}
 
-	public String getStaticFilePath() {
-		return staticFilePath;
-	}
-
-	public void setStaticFilePath(String staticFilePath) {
-		this.staticFilePath = staticFilePath;
-	}
-
-	public String getDynamicFilePath() {
-		return dynamicFilePath;
-	}
-
-	public void setDynamicFilePath(String dynamicFilePath) {
-		this.dynamicFilePath = dynamicFilePath;
-	}
-
-	public int getNumberOfParticles() {
-		return numberOfParticles;
-	}
-
-	public void setNumberOfParticles(int numberOfParticles) {
-		this.numberOfParticles = numberOfParticles;
-	}
-
-	public double getBoxSize() {
-		return boxSize;
-	}
-
-	public void setBoxSize(double boxSize) {
-		this.boxSize = boxSize;
-	}
-
 	public List<Particle> getParticles() {
-		return (List<Particle>) particles;
+		return new ArrayList<>(particles);
 	}
 
-	public void setParticles(Queue<Particle> particles) {
-		this.particles = particles;
-	}
 }
