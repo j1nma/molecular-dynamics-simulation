@@ -15,7 +15,11 @@ import java.util.List;
 public class App {
 
 	private static final String COLLISION_FREQUENCY_FILE = "./collision_frequency.txt";
+	private static final String INITIAL_SPEEDS_FILE = "./initial_speeds.txt";
+	private static final String LAST_THIRD_SPEEDS_FILE = "./last_third_speeds.txt";
 	private static PrintWriter eventWriter;
+	private static PrintWriter initialSpeedsWriter;
+	private static PrintWriter lastThirdSpeedsWriter;
 
 	public static void main(String[] args) throws IOException {
 
@@ -39,6 +43,8 @@ public class App {
 
 		// Initialize file writers
 		eventWriter = new PrintWriter(new FileWriter(COLLISION_FREQUENCY_FILE));
+		initialSpeedsWriter = new PrintWriter(new FileWriter(INITIAL_SPEEDS_FILE));
+		lastThirdSpeedsWriter = new PrintWriter(new FileWriter(LAST_THIRD_SPEEDS_FILE));
 
 		// Run algorithm
 		runAlgorithm(
@@ -63,7 +69,9 @@ public class App {
 				limitTime,
 				maxEvents,
 				buffer,
-				eventWriter
+				eventWriter,
+				initialSpeedsWriter,
+				lastThirdSpeedsWriter
 		);
 
 		long stopTime = System.currentTimeMillis();
