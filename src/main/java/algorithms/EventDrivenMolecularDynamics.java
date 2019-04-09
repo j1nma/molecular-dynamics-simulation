@@ -94,6 +94,20 @@ public class EventDrivenMolecularDynamics {
 			if (nextEvent.particle2 != null)
 				determineFutureCollisions(nextEvent.particle2, particlesFromDynamic, limitTime);
 
+			if (evolutions % 100 == 0) {
+				// Print event
+				// Print dummy particles to simulation output file
+				buff.append(particlesFromDynamic.size() + 2).append("\n")
+						.append(currentSimulationTime + "\n")
+						.append(particleToString(dummy1)).append("\n")
+						.append(particleToString(dummy2)).append("\n");
+
+				// Print location
+				for (Particle p : particlesFromDynamic) {
+					buff.append(particleToString(p)).append("\n");
+				}
+			}
+
 			lastEventTime = currentSimulationTime;
 		}
 	}
@@ -160,7 +174,8 @@ public class EventDrivenMolecularDynamics {
 				p.getPosition().getX() + " " +
 				p.getPosition().getY() + " " +
 				p.getVelocity().getX() + " " +
-				p.getVelocity().getY() + " " //TODO: should colour come here as angle did in TP2?
+				p.getVelocity().getY() + " " +
+				p.getRadius() + " "
 				;
 	}
 

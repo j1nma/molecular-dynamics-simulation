@@ -177,4 +177,11 @@ public class Particle implements Cloneable {
 		this.velocity = velocity;
 	}
 
+	public double getRadius() {
+		return radius;
+	}
+
+	public double getMass() {
+		return mass;
+	}
 }
