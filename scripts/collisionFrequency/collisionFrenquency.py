@@ -58,6 +58,8 @@ for k in range(0, times):
 with open('{dirName}/Mean-and-Std-N={N}.txt'.format(
 	dirName = dirName,
 	N = N), 'w') as f:
+	f.write(str(1 / numpy.mean(values)))
+	f.write('\n')
 	f.write(str(numpy.mean(values)))
 	f.write('\n')
 	f.write(str(numpy.std(values)))
