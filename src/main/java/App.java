@@ -19,8 +19,16 @@ public class App {
 	private static final String COLLISION_FREQUENCY_FILE = OUTPUT_DIRECTORY + "/collision_frequency.txt";
 	private static PrintWriter eventWriter;
 
-
 	public static void main(String[] args) throws IOException {
+		// Create output directory if non-existent
+		File directory = new File(OUTPUT_DIRECTORY);
+		if (!directory.exists()) {
+			if (!directory.mkdir()) {
+				System.out.println("Could not create output directory: " + OUTPUT_DIRECTORY);
+				return;
+			}
+		}
+
 		// Parse command line options
 		OptionsParser parser = OptionsParser.newOptionsParser(SimulationOptions.class);
 		parser.parseAndExitUponError(args);
@@ -28,6 +36,7 @@ public class App {
 		assert options != null;
 		if (options.time <= 0
 				|| options.maxEvents <= 0
+				|| options.boxSize <= 0
 				|| options.staticFile.isEmpty()
 				|| options.dynamicFile.isEmpty()) {
 			printUsage(parser);
@@ -36,21 +45,15 @@ public class App {
 		// Parse static and dynamic files
 		Parser staticAndDynamicParser = new Parser(options.staticFile, options.dynamicFile);
 		if (!staticAndDynamicParser.parse()) return;
-
 		List<Particle> particles = staticAndDynamicParser.getParticles();
 
-		// Create output directory if non-existent
-		File directory = new File(OUTPUT_DIRECTORY);
-		if (!directory.exists()) {
-			directory.mkdir();
-		}
-
+		// Initialize file writers
 		eventWriter = new PrintWriter(new FileWriter(COLLISION_FREQUENCY_FILE));
 
 		// Run algorithm
 		runAlgorithm(
 				particles,
-				staticAndDynamicParser.getBoxSize(),
+				options.boxSize,
 				options.time,
 				options.maxEvents
 		);

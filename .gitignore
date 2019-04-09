@@ -73,8 +73,6 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 ### Java template
 # Compiled class file
-*.class
-
 # Log file
 *.log
 
@@ -85,7 +83,6 @@ buildNumber.properties
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
@@ -98,3 +95,4 @@ hs_err_pid*
 
 /output/
 /scripts/*.txt
+/*.txt

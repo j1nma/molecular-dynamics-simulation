@@ -35,6 +35,15 @@ public class SimulationOptions extends OptionsBase {
 	public String dynamicFile;
 
 	@Option(
+			name = "boxSize",
+			abbrev = 'l',
+			help = "Size of box.",
+			category = "startup",
+			defaultValue = "0.5"
+	)
+	public double boxSize;
+
+	@Option(
 			name = "time",
 			abbrev = 't',
 			help = "Time of simulation.",

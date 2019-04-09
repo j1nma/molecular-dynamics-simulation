@@ -3,6 +3,7 @@ package algorithms;
 import models.Particle;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
+import javax.annotation.Nonnull;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -15,7 +16,6 @@ public class EventDrivenMolecularDynamics {
 	private static PriorityQueue<Event> pq = new PriorityQueue<>();
 	private static double L;
 	private static double currentSimulationTime;
-	private static double lastEventTime;
 
 	public static void run(
 			List<Particle> particlesFromDynamic,
@@ -51,8 +51,9 @@ public class EventDrivenMolecularDynamics {
 		determineFutureCollisions(particlesFromDynamic, limitTime);
 
 		// Set last event time as 0
-		lastEventTime = 0.0;
+		double lastEventTime = 0.0;
 
+		// Set current number of evolutions as  0
 		int evolutions = 0;
 
 		// Main event-driven simulation loop
@@ -197,35 +198,21 @@ public class EventDrivenMolecularDynamics {
 		/**
 		 * return the time associated with the event.
 		 */
-		public double getTime() {
+		double getTime() {
 			return this.t;
-		}
-
-		/**
-		 * return the first particle, possibly null.
-		 */
-		public Particle getParticle1() {
-			return this.particle1;
-		}
-
-		/**
-		 * return the second particle, possibly null.
-		 */
-		public Particle getParticle2() {
-			return this.particle2;
 		}
 
 		/**
 		 * compare the time associated with this event and x. Return a positive number (greater), negative number (less), or zero (equal) accordingly.
 		 */
-		public int compareTo(Event e) {
+		public int compareTo(@Nonnull Event e) {
 			return Double.compare(t, e.getTime());
 		}
 
 		/**
 		 * return true if the event has been invalidated since creation, and false if the event has been invalidated.
 		 */
-		public boolean wasSuperveningEvent() {
+		boolean wasSuperveningEvent() {
 			if (particle1 == null)
 				return particle2.getCollisionCount() != collisionsP2;
 			if (particle2 == null)
