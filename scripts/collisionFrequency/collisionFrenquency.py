@@ -7,15 +7,15 @@ from numpy import zeros
 
 N = 100
 L = 0.5
-max_velocity_module = 0.1
+max_velocity_module = 0.3
 small_radius = 0.005
 small_mass = 0.0001
 big_radius = 0.05
 big_mass = 0.1
 
-limitTime = 10000
+limitTime = 6000
 
-dirName='../output/collisionFrequency';
+dirName='./output';
 
 if not os.path.exists(dirName):
         os.mkdir(dirName)
@@ -27,7 +27,7 @@ values = zeros(times);
 
 # Generate a file with set of parameters
 for k in range(0, times):
-	os.system('python3 ./generate.py {N} {L} {max_velocity_module} {small_radius} {small_mass} {big_radius} {big_mass}'.format(
+	os.system('python3 ../generate.py {N} {L} {max_velocity_module} {small_radius} {small_mass} {big_radius} {big_mass}'.format(
 		N = N, 
 		L = L,
 		max_velocity_module = max_velocity_module,
@@ -37,7 +37,7 @@ for k in range(0, times):
 		big_mass = big_mass
 		));
 
-	command = 'java -jar ../target/molecular-dynamics-simulation-1.0-SNAPSHOT.jar --dynamicFile=Dynamic-N={N}.txt --staticFile=Static-N={N}.txt --time={limitTime} --boxSize={L}'.format(
+	command = 'java -jar ../../target/molecular-dynamics-simulation-1.0-SNAPSHOT.jar --dynamicFile=../data/Dynamic-N={N}.txt --staticFile=../data/Static-N={N}.txt --time={limitTime} --boxSize={L}'.format(
 						N = N,
 						limitTime = limitTime,
 						L = L,
@@ -55,8 +55,7 @@ for k in range(0, times):
 	values[k] = float(number)
 	print(values[k])
 
-open('{dirName}/N={N}.txt'.format(dirName = dirName, N = N), 'w').close();
-with open('{dirName}/N={N}.txt'.format(
+with open('{dirName}/Mean-and-Std-N={N}.txt'.format(
 	dirName = dirName,
 	N = N), 'w') as f:
 	f.write(str(numpy.mean(values)))

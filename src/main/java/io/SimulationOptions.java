@@ -48,7 +48,7 @@ public class SimulationOptions extends OptionsBase {
 			abbrev = 't',
 			help = "Time of simulation.",
 			category = "startup",
-			defaultValue = "60000"
+			defaultValue = "60.0"
 	)
 	public double time;
 

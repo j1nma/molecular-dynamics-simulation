@@ -5,7 +5,6 @@ import io.Parser;
 import io.SimulationOptions;
 import models.Particle;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,19 +14,10 @@ import java.util.List;
 
 public class App {
 
-	private static final String OUTPUT_DIRECTORY = "./output";
-	private static final String COLLISION_FREQUENCY_FILE = OUTPUT_DIRECTORY + "/collision_frequency.txt";
+	private static final String COLLISION_FREQUENCY_FILE = "./collision_frequency.txt";
 	private static PrintWriter eventWriter;
 
 	public static void main(String[] args) throws IOException {
-		// Create output directory if non-existent
-		File directory = new File(OUTPUT_DIRECTORY);
-		if (!directory.exists()) {
-			if (!directory.mkdir()) {
-				System.out.println("Could not create output directory: " + OUTPUT_DIRECTORY);
-				return;
-			}
-		}
 
 		// Parse command line options
 		OptionsParser parser = OptionsParser.newOptionsParser(SimulationOptions.class);
@@ -79,7 +69,8 @@ public class App {
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
 
-		System.out.println("Event Driven Molecular Dynamics execution time: " + elapsedTime + "ms");
+		System.out.println("======================== Results ========================");
+		System.out.println("Event Driven Molecular Dynamics execution time (ms):\t" + elapsedTime);
 
 		OvitoWriter<Particle> ovitoWriter;
 		try {
@@ -90,7 +81,8 @@ public class App {
 			e.printStackTrace();
 		}
 
-//		System.out.println(OffLattice.getOrderValues().peek());
+		System.out.println("Average time between collisions (ms):\t" +
+				EventDrivenMolecularDynamics.getAverageTimeBetweenCollisions());
 
 //		OctaveWriter octaveWriter;
 //		try {

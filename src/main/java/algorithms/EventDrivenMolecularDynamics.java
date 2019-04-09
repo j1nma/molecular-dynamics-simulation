@@ -5,6 +5,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import javax.annotation.Nonnull;
 import java.io.PrintWriter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -15,7 +16,9 @@ public class EventDrivenMolecularDynamics {
 
 	private static PriorityQueue<Event> pq = new PriorityQueue<>();
 	private static double L;
-	private static double currentSimulationTime;
+	private static double currentSimulationTime = 0.0;
+
+	private static List<Double> timesBetweenCollision = new LinkedList<>();
 
 	public static void run(
 			List<Particle> particlesFromDynamic,
@@ -71,8 +74,6 @@ public class EventDrivenMolecularDynamics {
 			evolutions++;
 
 			currentSimulationTime = nextEvent.getTime();
-			System.out.println(currentSimulationTime);
-			// If the event corresponds to a physical collision between particles i and j:
 
 			// Advance all particles to time t along a straight line trajectory.
 			advanceAllParticlesTc(particlesFromDynamic, currentSimulationTime - lastEventTime);
@@ -82,8 +83,9 @@ public class EventDrivenMolecularDynamics {
 			// thing for particle i.
 			updateVelocities(nextEvent.particle1, nextEvent.particle2);
 
-			// Write time of collision
+			// Write time between collisions
 			eventWriter.println(currentSimulationTime - lastEventTime);
+			timesBetweenCollision.add(currentSimulationTime - lastEventTime);
 
 			// Determine all future collisions that would occur involving either i or j, assuming all particles move
 			// in straight line trajectories from time t onwards. Insert these events onto the priority queue.
@@ -94,6 +96,10 @@ public class EventDrivenMolecularDynamics {
 
 			lastEventTime = currentSimulationTime;
 		}
+	}
+
+	public static double getAverageTimeBetweenCollisions() {
+		return timesBetweenCollision.stream().mapToDouble(t -> t).average().orElse(Double.NaN);
 	}
 
 	private static void updateVelocities(Particle p1, Particle p2) {

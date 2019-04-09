@@ -1,5 +1,6 @@
 from numpy import random, pi, power, concatenate
 import sys
+import os
 
 def is_valid_position(otherX, otherY, otherRadius, newX, newY, newRadius):
     return (power(otherX - newX, 2) + pow(otherY - newY, 2)) > pow(otherRadius + newRadius, 2)
@@ -16,7 +17,7 @@ def generate_static_file(name, number_of_small_particles, area_length, particle_
 
 def generate_dynamic_file(name, number_of_small_particles, area_length, max_velocity_module, particle_radius, large_particle_radius):
     with open(name, 'w') as f:
-        f.write('{}\n{}\n'.format(number_of_small_particles, area_length))
+        f.write('{}\n'.format(number_of_small_particles))
 
         # Large particle
         particles = [[area_length/2, area_length/2, large_particle_radius]]
@@ -41,12 +42,12 @@ def generate_dynamic_file(name, number_of_small_particles, area_length, max_velo
             f.write('{}\t{}\t{}\t{}\t{}\n'.format(i + 2, x, y, vx, vy))
 
 def generate_files(number_of_small_particles, area_length, max_velocity_module, particle_radius, particle_mass, large_particle_radius, large_particle_mass):
-    generate_static_file('Static-N=' + str(number_of_small_particles) + '.txt', number_of_small_particles, area_length, particle_radius, particle_mass, large_particle_radius, large_particle_mass)
-    generate_dynamic_file('Dynamic-N=' + str(number_of_small_particles) + '.txt', number_of_small_particles, area_length, max_velocity_module, particle_radius, large_particle_radius)
-
-def generate_multiple_files(index, number_of_small_particles, area_length, particle_radius, particle_mass, large_particle_radius, large_particle_mass):
-    generate_static_file('Static-' + str(index) + '.txt', number_of_small_particles, area_length, particle_radius, particle_mass, large_particle_radius, large_particle_mass)
-    generate_dynamic_file('Dynamic-N=' + str(number_of_small_particles) + '.txt', number_of_small_particles, area_length, max_velocity_module, particle_radius, large_particle_radius)
+    dirName = '../data';
+    if not os.path.exists(dirName):
+            os.mkdir(dirName)
+            print("Directory " , dirName ,  " Created ")
+    generate_static_file(dirName + '/Static-N=' + str(number_of_small_particles) + '.txt', number_of_small_particles, area_length, particle_radius, particle_mass, large_particle_radius, large_particle_mass)
+    generate_dynamic_file(dirName + '/Dynamic-N=' + str(number_of_small_particles) + '.txt', number_of_small_particles, area_length, max_velocity_module, particle_radius, large_particle_radius)
 
 def is_int_string(s):
     try:
