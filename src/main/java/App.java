@@ -5,6 +5,7 @@ import io.Parser;
 import io.SimulationOptions;
 import models.Particle;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,14 +15,23 @@ import java.util.List;
 
 public class App {
 
-	private static final String COLLISION_FREQUENCY_FILE = "./collision_frequency.txt";
-	private static final String INITIAL_SPEEDS_FILE = "./initial_speeds.txt";
-	private static final String LAST_THIRD_SPEEDS_FILE = "./last_third_speeds.txt";
+	private static final String OUTPUT_DIRECTORY = "./output";
+	private static final String OVITO_FILE = OUTPUT_DIRECTORY + "/ovito_file.txt";
+	private static final String COLLISION_DIRECTORY = OUTPUT_DIRECTORY + "/collisionFrequency";
+	private static final String COLLISION_FREQUENCY_FILE = COLLISION_DIRECTORY + "/collision_frequency.txt";
+	private static final String SPEEDS_DIRECTORY = OUTPUT_DIRECTORY + "/lastThirdSpeeds";
+	private static final String INITIAL_SPEEDS_FILE = SPEEDS_DIRECTORY + "/initial_speeds.txt";
+	private static final String LAST_THIRD_SPEEDS_FILE = SPEEDS_DIRECTORY + "/last_third_speeds.txt";
 	private static PrintWriter eventWriter;
 	private static PrintWriter initialSpeedsWriter;
 	private static PrintWriter lastThirdSpeedsWriter;
 
 	public static void main(String[] args) throws IOException {
+
+		// Create directories
+		new File(OUTPUT_DIRECTORY).mkdirs();
+		new File(COLLISION_DIRECTORY).mkdirs();
+		new File(SPEEDS_DIRECTORY).mkdirs();
 
 		// Parse command line options
 		OptionsParser parser = OptionsParser.newOptionsParser(SimulationOptions.class);
@@ -82,7 +92,7 @@ public class App {
 
 		OvitoWriter<Particle> ovitoWriter;
 		try {
-			ovitoWriter = new OvitoWriter<>(Paths.get("ovito_file.txt"));
+			ovitoWriter = new OvitoWriter<>(Paths.get(OVITO_FILE));
 			ovitoWriter.writeBuffer(buffer);
 			ovitoWriter.close();
 		} catch (IOException e) {
