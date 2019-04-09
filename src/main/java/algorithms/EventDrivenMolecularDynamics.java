@@ -93,7 +93,6 @@ public class EventDrivenMolecularDynamics {
 
 			// Write time between collisions
 			eventWriter.println(currentSimulationTime - lastEventTime);
-			System.out.println(currentSimulationTime);
 			timesBetweenCollision.add(currentSimulationTime - lastEventTime);
 
 			// Save speeds for last third of simulation
