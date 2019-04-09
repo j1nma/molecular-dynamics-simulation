@@ -15,6 +15,8 @@ set(gca, 'fontsize', 18);
 axis([0 0.15])
 grid on
 
+print(sprintf("../output/collisionFrequency/Histogram-collision-frequency-N=%d.jpg", N), "-djpg")
+
 figure(2)
 [nn, xx] = hist(data, 2*N); %# Bin the data
 bar(xx, nn ./ (count * (xx(2) - xx(1))));
@@ -23,3 +25,5 @@ ylabel("Densidad de probabilidad", 'fontsize', 16);
 set(gca, 'fontsize', 18);
 axis([0 0.15])
 grid on
+
+print(sprintf("../output/collisionFrequency/PDF-collision-frequency-N=%d.jpg", N), "-djpg")

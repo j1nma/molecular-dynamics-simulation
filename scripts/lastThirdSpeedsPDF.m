@@ -13,6 +13,7 @@ ylabel("Densidad de probabilidad", 'fontsize', 16);
 set(gca, 'fontsize', 18);
 axis([0 maxSpeed])
 grid on
+print("../output/lastThirdSpeeds/PDF-speeds-initial.jpg", "-djpg")
 
 data2 = load('../output/lastThirdSpeeds/last_third_speeds.txt');
 count2 = numel(data2)
@@ -29,3 +30,4 @@ ylabel("Densidad de probabilidad", 'fontsize', 16);
 set(gca, 'fontsize', 18);
 axis([0 maxSpeed2])
 grid on
+print("../output/lastThirdSpeeds/PDF-speeds-last-thirds.jpg", "-djpg")
