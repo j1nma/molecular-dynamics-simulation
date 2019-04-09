@@ -1,10 +1,8 @@
-data = load('./last_third_speeds.txt');
-N = 100;
+data = load('./initial_speeds.txt');
 count = numel(data)
 dataMean = mean(data)
-maxTime = max(data)
-sprintf("Promedio del módulo de las velocidades = %d +- %d", 1/dataMean, std(data))
-xRange = 0:0.001:maxTime;
+maxSpeed = max(data)
+sprintf("Promedio del módulo de las velocidades (en t=0) = %5.3f ± %5.3f", dataMean, std(data))
 
 figure(1)
 [nn, xx] = hist(data, 2*N); %# Bin the data

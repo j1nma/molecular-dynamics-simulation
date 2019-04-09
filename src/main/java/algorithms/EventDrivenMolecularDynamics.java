@@ -20,6 +20,7 @@ public class EventDrivenMolecularDynamics {
 
 	private static List<Double> timesBetweenCollision = new LinkedList<>();
 
+
 	public static void run(
 			List<Particle> particlesFromDynamic,
 			double boxSize,
