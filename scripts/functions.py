@@ -1,4 +1,4 @@
-from numpy import random, pi, power, concatenate
+from numpy import random, pi, power, concatenate, sqrt, cos, sin
 import sys
 import os
 
@@ -36,13 +36,16 @@ def generate_dynamic_file(name, number_of_small_particles, area_length, max_velo
                 while j < len(particles) and validPosition:
                     validPosition = is_valid_position(particles[j][0], particles[j][1], particles[j][2], x, y, particle_radius)
                     j = j + 1
-            vx = random.uniform() * (max_velocity_module - (-max_velocity_module)) + (-max_velocity_module)
-            vy = random.uniform() * (max_velocity_module - (-max_velocity_module)) + (-max_velocity_module)
+
+            random_velocity = random.uniform() * 2 * max_velocity_module - max_velocity_module
+            angle = random.uniform() * 2 * pi
+            vx = cos(angle) * random_velocity
+            vy = sin(angle) * random_velocity
             particles = concatenate((particles, [[x, y, particle_radius]]), axis=0)
             f.write('{}\t{}\t{}\t{}\t{}\n'.format(i + 2, x, y, vx, vy))
 
 def generate_files(number_of_small_particles, area_length, max_velocity_module, particle_radius, particle_mass, large_particle_radius, large_particle_mass):
-    dirName = '../data';
+    dirName = './data';
     if not os.path.exists(dirName):
             os.mkdir(dirName)
             print("Directory " , dirName ,  " Created ")

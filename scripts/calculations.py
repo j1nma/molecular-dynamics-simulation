@@ -15,11 +15,21 @@ big_mass = 0.1
 
 limitTime = 60
 
-dirName='./output';
+dirName = './output';
+collisionFrequencyDirName = dirName + '/collisionFrequency';
+lastThirdSpeedsDirName = dirName + '/lastThirdSpeeds';
 
 if not os.path.exists(dirName):
         os.mkdir(dirName)
-        print("Directory " , dirName ,  " Created ")
+        print("Directory ", dirName, " created.")
+
+if not os.path.exists(lastThirdSpeedsDirName):
+        os.mkdir(lastThirdSpeedsDirName)
+        print("Directory ", lastThirdSpeedsDirName, " created.")
+
+if not os.path.exists(collisionFrequencyDirName):
+        os.mkdir(collisionFrequencyDirName)
+        print("Directory ", collisionFrequencyDirName, " created.")
 
 times = 3
 
@@ -27,7 +37,7 @@ values = zeros(times);
 
 # Generate a file with set of parameters
 for k in range(0, times):
-	os.system('python3 ../generate.py {N} {L} {max_velocity_module} {small_radius} {small_mass} {big_radius} {big_mass}'.format(
+	os.system('python3 ./scripts/generate.py {N} {L} {max_velocity_module} {small_radius} {small_mass} {big_radius} {big_mass}'.format(
 		N = N, 
 		L = L,
 		max_velocity_module = max_velocity_module,
@@ -37,7 +47,7 @@ for k in range(0, times):
 		big_mass = big_mass
 		));
 
-	command = 'java -jar ../../target/molecular-dynamics-simulation-1.0-SNAPSHOT.jar --dynamicFile=../data/Dynamic-N={N}.txt --staticFile=../data/Static-N={N}.txt --time={limitTime} --boxSize={L}'.format(
+	command = 'java -jar ./target/molecular-dynamics-simulation-1.0-SNAPSHOT.jar --dynamicFile=./data/Dynamic-N={N}.txt --staticFile=./data/Static-N={N}.txt --time={limitTime} --boxSize={L}'.format(
 						N = N,
 						limitTime = limitTime,
 						L = L,
@@ -56,7 +66,7 @@ for k in range(0, times):
 	print(values[k])
 
 with open('{dirName}/Mean-and-Std-N={N}-times={times}.txt'.format(
-	dirName = dirName,
+	dirName = collisionFrequencyDirName,
 	N = N,
 	times = times
 	), 'w') as f:
