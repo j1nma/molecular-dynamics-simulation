@@ -7,13 +7,13 @@ from numpy import zeros
 
 N = 100
 L = 0.5
-max_velocity_module = 0.3
+max_velocity_module = 0.1
 small_radius = 0.005
 small_mass = 0.0001
 big_radius = 0.05
 big_mass = 0.1
 
-limitTime = 6000
+limitTime = 60
 
 dirName='./output';
 
