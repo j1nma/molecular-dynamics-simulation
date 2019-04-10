@@ -53,6 +53,9 @@ public class EventDrivenMolecularDynamics {
 			initialSpeedsWriter.println(p.getSpeed());
 		}
 
+		// Print limit time to trajectory file
+		bigParticleTrajectoryWriter.println((int) limitTime);
+
 		// Last third times
 		double lastThirdTime = limitTime * (2.0 / 3);
 
@@ -113,7 +116,7 @@ public class EventDrivenMolecularDynamics {
 				// Print event
 				// Print dummy particles to simulation output file
 				buff.append(particlesFromDynamic.size() + 2).append("\n")
-						.append(currentSimulationTime + "\n")
+						.append(currentSimulationTime).append("\n")
 						.append(particleToString(dummy1)).append("\n")
 						.append(particleToString(dummy2)).append("\n");
 
@@ -125,7 +128,8 @@ public class EventDrivenMolecularDynamics {
 
 			if (evolutions % 75 == 0) {
 				// Write big particle position for trajectory
-				bigParticleTrajectoryWriter.println(particlesFromDynamic.get(0).getPosition().toString());
+				Vector2D bigParticlePosition = particlesFromDynamic.get(0).getPosition();
+				bigParticleTrajectoryWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
 			}
 
 			lastEventTime = currentSimulationTime;
