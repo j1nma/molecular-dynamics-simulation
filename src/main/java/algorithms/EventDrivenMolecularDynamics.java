@@ -29,7 +29,8 @@ public class EventDrivenMolecularDynamics {
 			PrintWriter eventWriter,
 			PrintWriter initialSpeedsWriter,
 			PrintWriter lastThirdSpeedsWriter,
-			PrintWriter bigParticleTrajectoryWriter) {
+			PrintWriter bigParticleTrajectoryWriter,
+			PrintWriter bigParticleDiffusionWriter) {
 		L = boxSize;
 
 		// Particles for fixing Ovito grid
@@ -49,6 +50,9 @@ public class EventDrivenMolecularDynamics {
 		// Write limit time to trajectory file
 		bigParticleTrajectoryWriter.println((int) limitTime);
 
+		// Write limit time to big particle diffusion file
+		bigParticleDiffusionWriter.println((int) limitTime);
+
 		for (Particle p : particles) {
 			// Print location
 			buff.append(particleToString(p)).append("\n");
@@ -60,6 +64,12 @@ public class EventDrivenMolecularDynamics {
 		// Write initial big particle position for trajectory
 		Vector2D bigParticlePosition = particles.get(0).getPosition();
 		bigParticleTrajectoryWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
+
+		// Write initial big particle position for diffusion file
+		bigParticleDiffusionWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
+
+		// Step of time when writing big particle position for diffusion (representing 10% of the simulation)
+		double bigParticleDiffusionTime = limitTime * (0.1);
 
 		// Last third times
 		double lastThirdTime = limitTime * (2.0 / 3);
@@ -139,6 +149,12 @@ public class EventDrivenMolecularDynamics {
 				bigParticleTrajectoryWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
 			}
 
+			if (currentSimulationTime % bigParticleDiffusionTime == 0) {
+				// Write initial big particle position for diffusion file
+				bigParticlePosition = particles.get(0).getPosition();
+				bigParticleDiffusionWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
+			}
+
 			lastEventTime = currentSimulationTime;
 		}
 
@@ -146,6 +162,7 @@ public class EventDrivenMolecularDynamics {
 		initialSpeedsWriter.close();
 		lastThirdSpeedsWriter.close();
 		bigParticleTrajectoryWriter.close();
+		bigParticleDiffusionWriter.close();
 	}
 
 	public static double getAverageTimeBetweenCollisions() {
