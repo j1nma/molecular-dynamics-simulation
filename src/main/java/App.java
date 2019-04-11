@@ -78,6 +78,9 @@ public class App {
 		StringBuffer buffer = new StringBuffer();
 		long startTime = System.currentTimeMillis();
 
+		// Print temperature (constant over time)
+		System.out.println("Temperature (K):\t" + EventDrivenMolecularDynamics.calculateTemperature(particles));
+
 		EventDrivenMolecularDynamics.run(
 				particles,
 				L,
@@ -107,15 +110,6 @@ public class App {
 
 		System.out.println("Average time between collisions (s):\t" +
 				EventDrivenMolecularDynamics.getAverageTimeBetweenCollisions());
-
-//		OctaveWriter octaveWriter;
-//		try {
-//			octaveWriter = new OctaveWriter(Paths.get("particular_va_file.txt"));
-//			octaveWriter.writeOrderValuesThroughIterations(OffLattice.getOrderValues());
-//			octaveWriter.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 	}
 
 	private static void printUsage(OptionsParser parser) {

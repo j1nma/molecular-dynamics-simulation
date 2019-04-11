@@ -1,4 +1,5 @@
-fid = fopen('../output/bigParticleTrajectory/trajectory.txt');
+function bigParticleTrajectory(index, temperature)
+fid = fopen('./output/bigParticleTrajectory/trajectory.txt');
 x = [];
 y = [];
 
@@ -9,7 +10,7 @@ limitTime = fgetl(fid);
 while (!feof(fid))
     # Parse position
     position = fgetl(fid);
-    [positionX positionY] = strsplit(position(1:end), " "){1,:}
+    [positionX positionY] = strsplit(position(1:end), " "){1,:};
     x = [x, str2num(positionX)];
     y = [y, str2num(positionY)];
 endwhile
@@ -17,11 +18,19 @@ endwhile
 x = x(2:end);
 y = y(2:end);
 
-h = plot(x,y);
+color='rmbc';
+markers = '.o*+x';
+props = {"color", color(index+1), "marker", markers(index+1),'LineStyle','none'};
+
+h = plot(x, y, sprintf(";T %d = %.10e K;", index, temperature));
+set (h, props{:})
 xlabel("Coordenada X", 'fontsize', 16);
 ylabel("Coordenada Y", 'fontsize', 16);
 set(gca, 'fontsize', 18);
 axis([0 0.5 0 0.5])
 grid on
 
-print(sprintf("../output/bigParticleTrajectory/BigParticleTrajectory-Time=%s.jpg", limitTime), "-djpg")
+hold all
+
+print(sprintf("./output/bigParticleTrajectory/BigParticleTrajectory-Time=%s.jpg", limitTime), "-djpg")
+end
