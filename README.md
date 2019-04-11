@@ -46,7 +46,7 @@ Confined system, that is, all walls are rigid.
 mvn clean package
 ```
 
-For some graphs, have *oct2py* installed through pip:
+For some graphs, have *oct2py* installed through pip or pip3:
 ```
 pip[3] install --user oct2py
 ```
