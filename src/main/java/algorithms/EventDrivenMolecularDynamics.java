@@ -89,7 +89,7 @@ public class EventDrivenMolecularDynamics {
 			// Update the velocities of the two colliding particles i and j according to the laws of elastic collision.
 			// If the event corresponds to a physical collision between particles i and a wall, do the analogous
 			// thing for particle i.
-			updateVelocities(nextEvent.particle1, nextEvent.particle2);
+			Boolean continueIterating = updateVelocities(nextEvent.particle1, nextEvent.particle2)==false);
 
 			// Write time between collisions
 			eventWriter.println(currentSimulationTime - lastEventTime);
@@ -106,6 +106,9 @@ public class EventDrivenMolecularDynamics {
 			if (nextEvent.particle2 != null)
 				determineFutureCollisions(nextEvent.particle2, particlesFromDynamic, limitTime);
 
+			if(!continueIterating) {
+				pq.clear();
+			}
 			if (evolutions % 100 == 0) {
 				// Print event
 				// Print dummy particles to simulation output file
@@ -132,14 +135,32 @@ public class EventDrivenMolecularDynamics {
 		return timesBetweenCollision.stream().mapToDouble(t -> t).average().orElse(Double.NaN);
 	}
 
+	/**
+	 * Update velocities considering collisions.
+	 *
+	 * If big ball impacts wall return false
+	 * @param p1
+	 * @param p2
+	 */
 	private static void updateVelocities(Particle p1, Particle p2) {
 		if (p1 == null && p2 == null) throw new IllegalArgumentException();
 		if (p1 != null && p2 != null)
 			p1.bounce(p2);
-		else if (p2 == null)
+		else if (p2 == null) {
 			p1.bounceX();
-		else
+			if(p1.getId() == 1) {
+				pq.clear();
+				return false;
+			}
+		} else {
 			p2.bounceY();
+			if(p2.getId() == 1) {
+				pq.clear();
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private static void advanceAllParticlesTc(List<Particle> particles, double t) {
