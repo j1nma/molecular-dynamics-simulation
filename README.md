@@ -51,8 +51,11 @@ mvn clean package
 ```
 python3 ./scripts/generate.py N L maxVelocityModule smallParticleRadius smallParticleMass largeParticleRadius largeParticleMass
 ```
-Ejemplo:
-python3 scripts/generate.py 1000 0.5 1 .005 0.1 .05 100
+
+Example:
+```
+python3 scripts/generate.py 100 0.5 0.1 0.005 0.0001 0.05 0.1
+```
 
 ### Running simulation
 
