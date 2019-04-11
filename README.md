@@ -85,6 +85,12 @@ The simulation's results are at `./output/ovito_file.txt`.
 python3 scripts/calculations.py
 ```
 
+### Run script to generate trajectories for same particles but increasing speed
+
+```
+python3 scripts/trajectory-temperature.py
+```
+
 ### (Octave) Run script to graph calculations
 
 ```
