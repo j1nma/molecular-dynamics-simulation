@@ -21,7 +21,7 @@ public class EventDrivenMolecularDynamics {
 	private static final double BOLTZMANN_CONSTANT = 1.380_648_52e-23;
 
 	public static void run(
-			List<Particle> particlesFromDynamic,
+			List<Particle> particles,
 			double boxSize,
 			double limitTime,
 			int maxEvents,
@@ -41,7 +41,7 @@ public class EventDrivenMolecularDynamics {
 		dummy2.setVelocity(new Vector2D(0, 0));
 
 		// Print dummy particles to simulation output file
-		buff.append(particlesFromDynamic.size() + 2).append("\n")
+		buff.append(particles.size() + 2).append("\n")
 				.append(0 + "\n")
 				.append(particleToString(dummy1)).append("\n")
 				.append(particleToString(dummy2)).append("\n");
@@ -49,7 +49,7 @@ public class EventDrivenMolecularDynamics {
 		// Write limit time to trajectory file
 		bigParticleTrajectoryWriter.println((int) limitTime);
 
-		for (Particle p : particlesFromDynamic) {
+		for (Particle p : particles) {
 			// Print location
 			buff.append(particleToString(p)).append("\n");
 
@@ -58,18 +58,15 @@ public class EventDrivenMolecularDynamics {
 		}
 
 		// Write initial big particle position for trajectory
-		Vector2D bigParticlePosition = particlesFromDynamic.get(0).getPosition();
+		Vector2D bigParticlePosition = particles.get(0).getPosition();
 		bigParticleTrajectoryWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
-
-		// Print temperature (constant over time)
-		System.out.println("Temperature (K): " + calculateTemperature(particlesFromDynamic));
 
 		// Last third times
 		double lastThirdTime = limitTime * (2.0 / 3);
 
 		// Determine all future collisions that would occur involving either i or j, assuming all particles move
 		// in straight line trajectories from time t onwards. Insert these events onto the priority queue.
-		determineFutureCollisions(particlesFromDynamic, limitTime);
+		determineFutureCollisions(particles, limitTime);
 
 		// Set last event time as 0
 		double lastEventTime = 0.0;
@@ -94,7 +91,7 @@ public class EventDrivenMolecularDynamics {
 			currentSimulationTime = nextEvent.getTime();
 
 			// Advance all particles to time t along a straight line trajectory.
-			advanceAllParticlesTc(particlesFromDynamic, currentSimulationTime - lastEventTime);
+			advanceAllParticlesTc(particles, currentSimulationTime - lastEventTime);
 
 			// Update the velocities of the two colliding particles i and j according to the laws of elastic collision.
 			// If the event corresponds to a physical collision between particles i and a wall, do the analogous
@@ -107,32 +104,32 @@ public class EventDrivenMolecularDynamics {
 
 			// Save speeds for last third of simulation
 			if (currentSimulationTime >= lastThirdTime)
-				particlesFromDynamic.forEach(p -> lastThirdSpeedsWriter.println(p.getSpeed()));
+				particles.forEach(p -> lastThirdSpeedsWriter.println(p.getSpeed()));
 
 			// Determine all future collisions that would occur involving either i or j, assuming all particles move
 			// in straight line trajectories from time t onwards. Insert these events onto the priority queue.
 			if (nextEvent.particle1 != null)
-				determineFutureCollisions(nextEvent.particle1, particlesFromDynamic, limitTime);
+				determineFutureCollisions(nextEvent.particle1, particles, limitTime);
 			if (nextEvent.particle2 != null)
-				determineFutureCollisions(nextEvent.particle2, particlesFromDynamic, limitTime);
+				determineFutureCollisions(nextEvent.particle2, particles, limitTime);
 
 			if (evolutions % 100 == 0) {
 				// Print event
 				// Print dummy particles to simulation output file
-				buff.append(particlesFromDynamic.size() + 2).append("\n")
+				buff.append(particles.size() + 2).append("\n")
 						.append(currentSimulationTime).append("\n")
 						.append(particleToString(dummy1)).append("\n")
 						.append(particleToString(dummy2)).append("\n");
 
 				// Print location
-				for (Particle p : particlesFromDynamic) {
+				for (Particle p : particles) {
 					buff.append(particleToString(p)).append("\n");
 				}
 			}
 
 			if (evolutions % 75 == 0) {
 				// Write big particle position for trajectory
-				bigParticlePosition = particlesFromDynamic.get(0).getPosition();
+				bigParticlePosition = particles.get(0).getPosition();
 				bigParticleTrajectoryWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
 			}
 
@@ -147,6 +144,14 @@ public class EventDrivenMolecularDynamics {
 
 	public static double getAverageTimeBetweenCollisions() {
 		return timesBetweenCollision.stream().mapToDouble(t -> t).average().orElse(Double.NaN);
+	}
+
+	public static double calculateTemperature(List<Particle> particles) {
+		double sum = particles.stream()
+				.map(p -> p.getMass() * p.getVelocity().getNormSq())
+				.mapToDouble(Double::doubleValue)
+				.sum();
+		return (sum / particles.size()) / (3 * BOLTZMANN_CONSTANT);
 	}
 
 	private static void updateVelocities(Particle p1, Particle p2) {
@@ -200,14 +205,6 @@ public class EventDrivenMolecularDynamics {
 		if (tc >= 0 && currentSimulationTime + tc <= limitTime) {
 			pq.offer(new Event(currentSimulationTime + tc, p1, p2));
 		}
-	}
-
-	private static double calculateTemperature(List<Particle> particles) {
-		double sum = particles.stream()
-				.map(p -> p.getMass() * p.getVelocity().getNormSq())
-				.mapToDouble(Double::doubleValue)
-				.sum();
-		return (sum / particles.size()) / (3 * BOLTZMANN_CONSTANT);
 	}
 
 	private static String particleToString(Particle p) {

@@ -1,6 +1,7 @@
 from numpy import random, pi, power, concatenate, sqrt, cos, sin
 import sys
 import os
+import fileinput
 
 def is_valid_position(otherX, otherY, otherRadius, newX, newY, newRadius):
     return (power(otherX - newX, 2) + pow(otherY - newY, 2)) > pow(otherRadius + newRadius, 2)
@@ -51,6 +52,22 @@ def generate_files(number_of_small_particles, area_length, max_velocity_module, 
             print("Directory " , dirName ,  " Created ")
     generate_static_file(dirName + '/Static-N=' + str(number_of_small_particles) + '.txt', number_of_small_particles, area_length, particle_radius, particle_mass, large_particle_radius, large_particle_mass)
     generate_dynamic_file(dirName + '/Dynamic-N=' + str(number_of_small_particles) + '.txt', number_of_small_particles, area_length, max_velocity_module, particle_radius, large_particle_radius)
+
+
+def edit_file_vx_vy(number_of_small_particles, max_velocity_module):
+    dirName = './data';
+    with open(dirName + '/Dynamic-N=' + str(number_of_small_particles) + '-V=' + str(max_velocity_module) +'.txt', 'w') as outfile:
+        for i, line in enumerate(fileinput.input(dirName + '/Dynamic-N=' + str(number_of_small_particles) + '.txt')):
+            if i == 0 or i == 1:
+                outfile.write(line);
+                continue;
+            line = line.split()
+            random_velocity = random.uniform() * 2 * max_velocity_module - max_velocity_module
+            angle = random.uniform() * 2 * pi
+            vx = cos(angle) * random_velocity
+            vy = sin(angle) * random_velocity
+            new_line = '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(line[0], line[1], line[2], vx, vy)
+            outfile.write(new_line)
 
 def is_int_string(s):
     try:
