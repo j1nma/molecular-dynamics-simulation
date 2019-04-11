@@ -62,7 +62,7 @@ public class EventDrivenMolecularDynamics {
 		bigParticleTrajectoryWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
 
 		// Print temperature (constant over time)
-		System.out.println(calculateTemperature(particlesFromDynamic));
+		System.out.println("Temperature (K): " + calculateTemperature(particlesFromDynamic));
 
 		// Last third times
 		double lastThirdTime = limitTime * (2.0 / 3);
