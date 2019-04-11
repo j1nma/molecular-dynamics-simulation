@@ -1,9 +1,6 @@
 from functions import is_int_string, generate_files, edit_file_vx_vy
 import sys
 
-print(len(sys.argv))
-print(sys.argv)
-
 if len(sys.argv) != 8:
     sys.exit("Arguments missing. Exit.")
 
@@ -12,7 +9,7 @@ area_length = sys.argv[2]
 
 velocity_modules = str(sys.argv[3])
 velocity_modules = velocity_modules.replace(']','').replace('[','')
-velocity_modules = velocity_modules.replace('"','').split(",")
+velocity_modules = velocity_modules.split(",")
 
 particle_radius = sys.argv[4]
 particle_mass = sys.argv[5]
