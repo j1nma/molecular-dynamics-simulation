@@ -18,6 +18,7 @@ public class EventDrivenMolecularDynamics {
 	private static double L;
 	private static double currentSimulationTime = 0.0;
 	private static List<Double> timesBetweenCollision = new LinkedList<>();
+	private static final double BOLTZMANN_CONSTANT = 1.380_648_52e-23;
 
 	public static void run(
 			List<Particle> particlesFromDynamic,
@@ -45,7 +46,7 @@ public class EventDrivenMolecularDynamics {
 				.append(particleToString(dummy1)).append("\n")
 				.append(particleToString(dummy2)).append("\n");
 
-		// Print limit time to trajectory file
+		// Write limit time to trajectory file
 		bigParticleTrajectoryWriter.println((int) limitTime);
 
 		for (Particle p : particlesFromDynamic) {
@@ -59,6 +60,9 @@ public class EventDrivenMolecularDynamics {
 		// Write initial big particle position for trajectory
 		Vector2D bigParticlePosition = particlesFromDynamic.get(0).getPosition();
 		bigParticleTrajectoryWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
+
+		// Print temperature (constant over time)
+		System.out.println(calculateTemperature(particlesFromDynamic));
 
 		// Last third times
 		double lastThirdTime = limitTime * (2.0 / 3);
@@ -196,6 +200,14 @@ public class EventDrivenMolecularDynamics {
 		if (tc >= 0 && currentSimulationTime + tc <= limitTime) {
 			pq.offer(new Event(currentSimulationTime + tc, p1, p2));
 		}
+	}
+
+	private static double calculateTemperature(List<Particle> particles) {
+		double sum = particles.stream()
+				.map(p -> p.getMass() * p.getVelocity().getNormSq())
+				.mapToDouble(Double::doubleValue)
+				.sum();
+		return (sum / particles.size()) / (3 * BOLTZMANN_CONSTANT);
 	}
 
 	private static String particleToString(Particle p) {
