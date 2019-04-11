@@ -9,7 +9,7 @@ limitTime = fgetl(fid);
 while (!feof(fid))
     # Parse position
     position = fgetl(fid);
-    [positionX positionY] = strsplit(position(2:end-1), " "){1,:};
+    [positionX positionY] = strsplit(position(1:end), " "){1,:}
     x = [x, str2num(positionX)];
     y = [y, str2num(positionY)];
 endwhile
