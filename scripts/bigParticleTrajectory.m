@@ -30,6 +30,7 @@ set(gca, 'fontsize', 18);
 axis([0 0.5 0 0.5])
 grid on
 
+# hold previous trajectory plots
 hold all
 
 print(sprintf("./output/bigParticleTrajectory/BigParticleTrajectory-Time=%s.jpg", limitTime), "-djpg")

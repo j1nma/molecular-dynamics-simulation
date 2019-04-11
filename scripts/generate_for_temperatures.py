@@ -27,6 +27,5 @@ float(particle_mass),
 float(large_particle_radius),
 float(large_particle_mass))
 
-edit_file_vx_vy(int(number_of_small_particles), float(velocity_modules[0]))
-edit_file_vx_vy(int(number_of_small_particles), float(velocity_modules[1]))
-edit_file_vx_vy(int(number_of_small_particles), float(velocity_modules[2]))
+for k in range(0, len(velocity_modules)):
+    edit_file_vx_vy(int(number_of_small_particles), float(velocity_modules[k]))
