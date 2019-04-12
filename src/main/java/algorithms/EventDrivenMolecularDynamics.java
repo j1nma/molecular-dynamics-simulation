@@ -69,7 +69,9 @@ public class EventDrivenMolecularDynamics {
 		bigParticleDiffusionWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
 
 		// Step of time when writing big particle position for diffusion (representing 10% of the simulation)
-		double bigParticleDiffusionTime = limitTime * (0.1);
+		int diffusionSnapshotPercentage = 10;
+		boolean[] snapshotMadeForPercentageOfTime = new boolean[diffusionSnapshotPercentage];
+		int bigParticleDiffusionTime = (int) (limitTime * (diffusionSnapshotPercentage / 100.0));
 
 		// Last third times
 		double lastThirdTime = limitTime * (2.0 / 3);
@@ -149,14 +151,23 @@ public class EventDrivenMolecularDynamics {
 				bigParticleTrajectoryWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
 			}
 
-			if (currentSimulationTime % bigParticleDiffusionTime == 0) {
-				// Write initial big particle position for diffusion file
-				bigParticlePosition = particles.get(0).getPosition();
-				bigParticleDiffusionWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
+			if ((((int) currentSimulationTime) % bigParticleDiffusionTime) == 0) {
+				int index = ((int) currentSimulationTime) / bigParticleDiffusionTime;
+				// Don't write position between 0 and first diffusion time (already written before loop)
+				if (index != 0 && !snapshotMadeForPercentageOfTime[index]) {
+					// Write initial big particle position for diffusion file
+					bigParticlePosition = particles.get(0).getPosition();
+					bigParticleDiffusionWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
+					snapshotMadeForPercentageOfTime[index] = true;
+				}
 			}
 
 			lastEventTime = currentSimulationTime;
 		}
+
+		// Write last big particle position for diffusion file
+		bigParticlePosition = particles.get(0).getPosition();
+		bigParticleDiffusionWriter.println(bigParticlePosition.getX() + " " + bigParticlePosition.getY());
 
 		eventWriter.close();
 		initialSpeedsWriter.close();

@@ -64,7 +64,7 @@ public class App {
 		initialSpeedsWriter = new PrintWriter(new FileWriter(INITIAL_SPEEDS_FILE));
 		lastThirdSpeedsWriter = new PrintWriter(new FileWriter(LAST_THIRD_SPEEDS_FILE));
 		bigParticleTrajectoryWriter = new PrintWriter(new FileWriter(TRAJECTORY_FILE));
-		bigParticleDiffusionWriter = new PrintWriter(new FileWriter(BIG_PARTICLE_DIFFUSION_DIRECTORY));
+		bigParticleDiffusionWriter = new PrintWriter(new FileWriter(BIG_PARTICLE_DIFFUSION_FILE));
 
 		// Run algorithm
 		runAlgorithm(
