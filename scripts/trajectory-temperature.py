@@ -56,7 +56,6 @@ for k in range(0, times):
 	print(command)
 	p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0)
 	number = None;
-	p.stdout.readline(); # Results line
 	line = p.stdout.readlines() # Temperature line
 	number = line[0].decode()
 	number = number.split('\t')
