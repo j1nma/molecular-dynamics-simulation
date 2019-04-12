@@ -21,18 +21,18 @@ function d = particleDiffusion
 	    d = [d, norm([str2num(positionX) str2num(positionY)] - [initialX initialY], 2)];
 	endwhile
 
-	#color='rmbc';
-    #markers = '.o*+x';
-    #props = {"color", 'r', "marker", '.', 'LineStyle', 'none'};
-    #h = plot(xRange, d);
-    #set(h, props{:})
-    #axis([0 limitTime])
-    #xlabel("Tiempo (s)", 'fontsize', 16);
-   # ylabel("DCM (m/s2)", 'fontsize', 16);
-   # set(gca, 'fontsize', 18);
-   # set(gca,'xtick',xRange);
-   # grid on
+	color='rmbc';
+    markers = '.o*+x';
+    props = {"color", 'r', "marker", '.', 'LineStyle', 'none'};
+    h = plot(xRange, d);
+    set(h, props{:})
+    axis([0 limitTime])
+    xlabel("Tiempo (s)", 'fontsize', 16);
+    ylabel("DCM (m/s2)", 'fontsize', 16);
+    set(gca, 'fontsize', 18);
+    set(gca,'xtick',xRange);
+    grid on
 
-	#print(sprintf("./output/bigParticleDiffusion/BigParticleDiffusion-Time=%s.jpg", limitTime), "-djpg")
+	print(sprintf("./output/bigParticleDiffusion/BigParticleDiffusion-Time=%d.jpg", limitTime), "-djpg")
 end
 

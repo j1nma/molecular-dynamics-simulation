@@ -2,6 +2,8 @@ import os
 import subprocess
 import csv
 import numpy
+import matplotlib.pyplot as plt
+import math
 from numpy import vstack
 from numpy import zeros
 from oct2py import octave
@@ -15,7 +17,7 @@ small_mass = 0.0001
 big_radius = 0.05
 big_mass = 0.1
 
-limitTime = 60
+limitTime = 120;
 
 dirName = './output';
 bigParticleDiffusionDirName = dirName + '/bigParticleDiffusion';
@@ -71,7 +73,15 @@ with open('{dirName}/Mean-and-Std-N={N}-times={times}.txt'.format(
 	N = N,
 	times = times
 	), 'w') as f:
-	f.write(str(numpy.mean(d_values, axis = 1)))
+
+	mean_values = numpy.mean(d_values, axis = 1);
+	for j in range(0, time_samples):
+	    f.write(str(mean_values[j]))
+	    f.write('\n')
+
 	f.write('\n')
-	f.write(str(numpy.std(d_values, axis = 1)))
-	f.write('\n')
+
+	std_values = numpy.std(d_values, axis = 1);
+	for j in range(0, time_samples):
+	    f.write(str(std_values[j]))
+	    f.write('\n')
