@@ -79,20 +79,33 @@ Options:
 
 The simulation's results are at `./output/ovito_file.txt`.
 
-### Run script to generate calculations
+### 3.1
 
 ```
 python3 scripts/calculations.py
 ```
 
-### Run script to generate trajectories for same particles but increasing speed
+```
+python3 scripts/graphCollisionPDF.py
+```
+
+Images at output/collisionFrequency.
+
+
+### 3.2
+
+```
+python3 scripts/calculations.py
+```
+
+```
+python3 scripts/graphLastThirdSpeedsPDF.py
+```
+
+Images at output/lastThirdSpeeds.
+
+### Run script to generate trajectories for same particles but increasing speed (3.3)
 
 ```
 python3 scripts/trajectory-temperature.py
-```
-
-### (Octave) Run script to graph calculations
-
-```
-scripts/[collisionPDF | lastThirdSpeedsPDF]
 ```
