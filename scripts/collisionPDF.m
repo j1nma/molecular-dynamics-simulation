@@ -1,4 +1,4 @@
-data = load('../output/collisionFrequency/collision_frequency.txt');
+data = load('./output/collisionFrequency/collision_frequency.txt');
 N = 100;
 count = numel(data)
 dataMean = mean(data)
@@ -15,7 +15,7 @@ set(gca, 'fontsize', 18);
 axis([0 maxTime])
 grid on
 
-print(sprintf("../output/collisionFrequency/Histogram-collision-frequency-N=%d.jpg", N), "-djpg")
+print(sprintf("./output/collisionFrequency/Histogram-collision-frequency-N=%d.jpg", N), "-djpg")
 
 figure(2)
 [nn, xx] = hist(data, 2*N); %# Bin the data
@@ -26,4 +26,4 @@ set(gca, 'fontsize', 18);
 axis([0 maxTime])
 grid on
 
-print(sprintf("../output/collisionFrequency/PDF-collision-frequency-N=%d.jpg", N), "-djpg")
+print(sprintf("./output/collisionFrequency/PDF-collision-frequency-N=%d.jpg", N), "-djpg")

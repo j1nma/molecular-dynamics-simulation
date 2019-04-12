@@ -21,6 +21,8 @@ function d = particleDiffusion
 	    d = [d, norm([str2num(positionX) str2num(positionY)] - [initialX initialY], 2)];
 	endwhile
 
+	fclose(fid);
+
 	color='rmbc';
     markers = '.o*+x';
     props = {"color", 'r', "marker", '.', 'LineStyle', 'none'};

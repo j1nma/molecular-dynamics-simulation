@@ -1,5 +1,5 @@
 function fullParticleDiffusion
-    fid = fopen('./output/bigParticleDiffusion/Mean-and-Std-N=100-times=10.txt');
+    fid = fopen('./output/bigParticleDiffusion/Mean-and-Std-N=1000-times=5.txt');
 
 	mean_values = [0.0];
 	std_values = [0.0];

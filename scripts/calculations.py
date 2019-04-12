@@ -55,9 +55,10 @@ for k in range(0, times):
 	print(command)
 	p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0)
 	number = None;
-	p.stdout.readline(); # Results line
-	p.stdout.readline(); # Execution time line
-	line = p.stdout.readlines() # Average time btw collisions line
+	line = p.stdout.readline(); # Temperature line
+	line = p.stdout.readline(); # Results line
+	line = p.stdout.readline(); # Execution time line
+	line = p.stdout.readlines(); # Average time btw collisions line
 	number = line[0].decode()
 	number = number.split('\t')
 	number = number[1]
