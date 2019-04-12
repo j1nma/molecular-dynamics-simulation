@@ -125,8 +125,9 @@ public class EventDrivenMolecularDynamics {
 			if (nextEvent.particle2 != null)
 				determineFutureCollisions(nextEvent.particle2, particles, limitTime);
 
-			if(!continueIterating) {
+			if (!continueIterating) {
 				pq.clear();
+//				System.out.println("BOUNCER");
 			}
 
 			// if (evolutions % 100 == 0) {
@@ -190,8 +191,9 @@ public class EventDrivenMolecularDynamics {
 
 	/**
 	 * Update velocities considering collisions.
-	 *
+	 * <p>
 	 * If big ball impacts wall return false
+	 *
 	 * @param p1
 	 * @param p2
 	 */
@@ -201,14 +203,10 @@ public class EventDrivenMolecularDynamics {
 			p1.bounce(p2);
 		else if (p2 == null) {
 			p1.bounceX();
-			if(p1.getId() == 1) {
-				return false;
-			}
+			return p1.getId() != 1;
 		} else {
 			p2.bounceY();
-			if(p2.getId() == 1) {
-				return false;
-			}
+			return p2.getId() != 1;
 		}
 
 		return true;
