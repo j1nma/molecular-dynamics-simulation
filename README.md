@@ -109,3 +109,9 @@ Images at output/lastThirdSpeeds.
 ```
 python3 scripts/trajectory-temperature.py
 ```
+
+### 3.4
+
+```
+python3 scripts/diffusion.py
+```

@@ -127,11 +127,9 @@ public class EventDrivenMolecularDynamics {
 
 			if (!continueIterating) {
 				pq.clear();
-//				System.out.println("BOUNCER");
 			}
 
 			// if (evolutions % 100 == 0) {
-
 			if (evolutions % 2000 == 0) {
 				// Print event
 				// Print dummy particles to simulation output file
