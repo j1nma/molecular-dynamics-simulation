@@ -1,4 +1,4 @@
-data = load('../output/lastThirdSpeeds/initial_speeds.txt');
+data = load('./output/lastThirdSpeeds/initial_speeds.txt');
 count = numel(data)
 dataMean = mean(data)
 maxSpeed = max(data)
@@ -13,9 +13,9 @@ ylabel("Densidad de probabilidad", 'fontsize', 16);
 set(gca, 'fontsize', 18);
 axis([0 maxSpeed])
 grid on
-print("../output/lastThirdSpeeds/PDF-speeds-initial.jpg", "-djpg")
+print("./output/lastThirdSpeeds/PDF-speeds-initial.jpg", "-djpg")
 
-data2 = load('../output/lastThirdSpeeds/last_third_speeds.txt');
+data2 = load('./output/lastThirdSpeeds/last_third_speeds.txt');
 count2 = numel(data2)
 dataMean2 = mean(data2)
 maxSpeed2 = max(data2)
@@ -30,4 +30,4 @@ ylabel("Densidad de probabilidad", 'fontsize', 16);
 set(gca, 'fontsize', 18);
 axis([0 maxSpeed2])
 grid on
-print("../output/lastThirdSpeeds/PDF-speeds-last-thirds.jpg", "-djpg")
+print("./output/lastThirdSpeeds/PDF-speeds-last-thirds.jpg", "-djpg")

@@ -5,9 +5,9 @@ import numpy
 from numpy import vstack
 from numpy import zeros
 
-N = 100
+N = 500
 L = 0.5
-max_velocity_module = 0.1
+max_velocity_module = 0.5
 small_radius = 0.005
 small_mass = 0.0001
 big_radius = 0.05
@@ -55,9 +55,10 @@ for k in range(0, times):
 	print(command)
 	p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0)
 	number = None;
-	p.stdout.readline(); # Results line
-	p.stdout.readline(); # Execution time line
-	line = p.stdout.readlines() # Average time btw collisions line
+	line = p.stdout.readline(); # Temperature line
+	line = p.stdout.readline(); # Results line
+	line = p.stdout.readline(); # Execution time line
+	line = p.stdout.readlines(); # Average time btw collisions line
 	number = line[0].decode()
 	number = number.split('\t')
 	number = number[1]

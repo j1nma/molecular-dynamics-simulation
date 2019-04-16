@@ -22,9 +22,15 @@ public class App {
 	private static final String SPEEDS_DIRECTORY = OUTPUT_DIRECTORY + "/lastThirdSpeeds";
 	private static final String INITIAL_SPEEDS_FILE = SPEEDS_DIRECTORY + "/initial_speeds.txt";
 	private static final String LAST_THIRD_SPEEDS_FILE = SPEEDS_DIRECTORY + "/last_third_speeds.txt";
+	private static final String TRAJECTORY_DIRECTORY = OUTPUT_DIRECTORY + "/bigParticleTrajectory";
+	private static final String TRAJECTORY_FILE = TRAJECTORY_DIRECTORY + "/trajectory.txt";
+	private static final String BIG_PARTICLE_DIFFUSION_DIRECTORY = OUTPUT_DIRECTORY + "/bigParticleDiffusion";
+	private static final String BIG_PARTICLE_DIFFUSION_FILE = BIG_PARTICLE_DIFFUSION_DIRECTORY + "/big_particle_diffusion.txt";
 	private static PrintWriter eventWriter;
 	private static PrintWriter initialSpeedsWriter;
 	private static PrintWriter lastThirdSpeedsWriter;
+	private static PrintWriter bigParticleTrajectoryWriter;
+	private static PrintWriter bigParticleDiffusionWriter;
 
 	public static void main(String[] args) throws IOException {
 
@@ -32,6 +38,8 @@ public class App {
 		new File(OUTPUT_DIRECTORY).mkdirs();
 		new File(COLLISION_DIRECTORY).mkdirs();
 		new File(SPEEDS_DIRECTORY).mkdirs();
+		new File(TRAJECTORY_DIRECTORY).mkdirs();
+		new File(BIG_PARTICLE_DIFFUSION_DIRECTORY).mkdirs();
 
 		// Parse command line options
 		OptionsParser parser = OptionsParser.newOptionsParser(SimulationOptions.class);
@@ -55,6 +63,8 @@ public class App {
 		eventWriter = new PrintWriter(new FileWriter(COLLISION_FREQUENCY_FILE));
 		initialSpeedsWriter = new PrintWriter(new FileWriter(INITIAL_SPEEDS_FILE));
 		lastThirdSpeedsWriter = new PrintWriter(new FileWriter(LAST_THIRD_SPEEDS_FILE));
+		bigParticleTrajectoryWriter = new PrintWriter(new FileWriter(TRAJECTORY_FILE));
+		bigParticleDiffusionWriter = new PrintWriter(new FileWriter(BIG_PARTICLE_DIFFUSION_FILE));
 
 		// Run algorithm
 		runAlgorithm(
@@ -73,6 +83,9 @@ public class App {
 		StringBuffer buffer = new StringBuffer();
 		long startTime = System.currentTimeMillis();
 
+		// Print temperature (constant over time)
+		System.out.println("Temperature (K):\t" + EventDrivenMolecularDynamics.calculateTemperature(particles));
+
 		EventDrivenMolecularDynamics.run(
 				particles,
 				L,
@@ -81,7 +94,9 @@ public class App {
 				buffer,
 				eventWriter,
 				initialSpeedsWriter,
-				lastThirdSpeedsWriter
+				lastThirdSpeedsWriter,
+				bigParticleTrajectoryWriter,
+				bigParticleDiffusionWriter
 		);
 
 		long stopTime = System.currentTimeMillis();
@@ -101,15 +116,6 @@ public class App {
 
 		System.out.println("Average time between collisions (s):\t" +
 				EventDrivenMolecularDynamics.getAverageTimeBetweenCollisions());
-
-//		OctaveWriter octaveWriter;
-//		try {
-//			octaveWriter = new OctaveWriter(Paths.get("particular_va_file.txt"));
-//			octaveWriter.writeOrderValuesThroughIterations(OffLattice.getOrderValues());
-//			octaveWriter.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 	}
 
 	private static void printUsage(OptionsParser parser) {
