@@ -3,7 +3,7 @@ count = numel(data)
 dataMean = mean(data)
 maxSpeed = max(data)
 sprintf("Promedio del módulo de las velocidades (en t=0) = %5.3f ± %5.3f", dataMean, std(data))
-xRange = 0:0.001:maxSpeed;
+xRange = 0:0.002:maxSpeed; # el bin es importante ojo con que quede todo entre un par de velocidades
 
 figure(1)
 [nn, xx] = hist(data, xRange); %# Bin the data
